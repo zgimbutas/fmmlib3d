@@ -13,7 +13,7 @@ cc License along with this program;
 cc if not, see <http://www.gnu.org/licenses/>.
 c
 c
-c    $Date: 2011-07-15 09:56:04 -0400 (Fri, 15 Jul 2011) $
+c    $Date: 2011-07-15 07:56:04 -0600 (Fri, 15 Jul 2011) $
 c    $Revision: 2240 $
 c
 c
@@ -1474,6 +1474,32 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);                            
+c> f := log(b+sqrt(c**2+b**2)) - log(a+sqrt(c**2+a**2));
+c                            2     2 1/2               2     2 1/2
+c            f := ln(b~ + (c~  + b~ )   ) - ln(a~ + (c~  + a~ )   )
+c
+c> taylor(f,c);                                         
+c                        /  1       1  \   2   /    3        3   \   4       6
+c(ln(2 b~) - ln(2 a~)) + |----- - -----| c~  + |- ------ + ------| c~  + O(c~ )
+c                        |    2       2|       |       4        4|
+c                        \4 b~    4 a~ /       \  32 b~    32 a~ /
+c
+c> assume(a<0); assume(b<0);                            
+c> f := log(b+sqrt(c**2+b**2)) - log(a+sqrt(c**2+a**2));
+c                            2     2 1/2               2     2 1/2
+c            f := ln(b~ + (c~  + b~ )   ) - ln(a~ + (c~  + a~ )   )
+c
+c> taylor(f,c);                                         
+c/      1            1   \   /    1       1  \   2   /  3        3   \   4
+c|ln(- ----) - ln(- ----)| + |- ----- + -----| c~  + |------ - ------| c~  +
+c\     2 b~         2 a~ /   |      2       2|       |     4        4|
+c                            \  4 b~    4 a~ /       \32 b~    32 a~ /
+c
+c        6
+c    O(c~ )
+c
 cc        if( a .gt. 0 .and. b .gt. 0 ) rval = log(b)-log(a)
 cc        if( a .lt. 0 .and. b .lt. 0 ) rval = -log(-b)+log(-a)
 cc        if( a .gt. 0 .and. b .gt. 0 ) rval = log(b/a) 
@@ -1507,6 +1533,33 @@ c
         iftaylor = 0
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
+c
+c> assume(a>0); assume(b>0);                            
+c> f := z*b/c**2/sqrt(c**2+b**2) - z*a/c**2/sqrt(c**2+a**2);
+c                             z b~                 z a~
+c                 f := ------------------ - ------------------
+c                        2    2     2 1/2     2    2     2 1/2
+c                      c~  (c~  + b~ )      c~  (c~  + a~ )
+c
+c> taylor(f,c);                                             
+c               /    z       z  \   / 3 z     3 z \   2       4
+c               |- ----- + -----| + |----- - -----| c~  + O(c~ )
+c               |      2       2|   |    4       4|
+c               \  2 b~    2 a~ /   \8 b~    8 a~ /
+c
+c> assume(a<0); assume(b<0);                                
+c> f := z*b/c**2/sqrt(c**2+b**2) - z*a/c**2/sqrt(c**2+a**2);
+c                             z b~                 z a~
+c                 f := ------------------ - ------------------
+c                        2    2     2 1/2     2    2     2 1/2
+c                      c~  (c~  + b~ )      c~  (c~  + a~ )
+c
+c> taylor(f,c);                                             
+c               /  z       z  \   /   3 z     3 z \   2       4
+c               |----- - -----| + |- ----- + -----| c~  + O(c~ )
+c               |    2       2|   |      4       4|
+c               \2 b~    2 a~ /   \  8 b~    8 a~ /
+c
         if( iftaylor .eq. 1 ) then
         if( a .gt. 0 .and. b .gt. 0 ) rval = +z*(1/a**2-1/b**2)/2
         if( a .lt. 0 .and. b .lt. 0 ) rval = -z*(1/a**2-1/b**2)/2
@@ -1547,12 +1600,56 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);                                                    
+c> f := -1/2*(b*sqrt(b**2+c**2)+log(b+sqrt(b**2+c**2))*c**2) +   
+c> 1/2*(a*sqrt(a**2+c**2)+log(a+sqrt(a**2+c**2))*c**2); 
+c             2     2 1/2                                           2     2 1/2
+c       b~ (c~  + b~ )                     2     2 1/2    2   a~ (c~  + a~ )
+cf := - ----------------- - 1/2 ln(b~ + (c~  + b~ )   ) c~  + -----------------
+c               2                                                     2
+c
+c                      2     2 1/2    2
+c     + 1/2 ln(a~ + (c~  + a~ )   ) c~
+c
+c> taylor(f,c);                                                                 
+c/    2     2\
+c|  b~    a~ |                                    2   /    1        1   \   4
+c|- --- + ---| + (-1/2 ln(2 b~) + 1/2 ln(2 a~)) c~  + |- ------ + ------| c~
+c\   2     2 /                                        |       2        2|
+c                                                     \  16 b~    16 a~ /
+c
+c           6
+c     + O(c~ )
+c
+c
+c> assume(a<0); assume(b<0);  
+c> f := -1/2*(b*sqrt(b**2+c**2)+log(b+sqrt(b**2+c**2))*c**2) + 
+c> 1/2*(a*sqrt(a**2+c**2)+log(a+sqrt(a**2+c**2))*c**2);       
+c             2     2 1/2                                           2     2 1/2
+c       b~ (c~  + b~ )                     2     2 1/2    2   a~ (c~  + a~ )
+cf := - ----------------- - 1/2 ln(b~ + (c~  + b~ )   ) c~  + -----------------
+c               2                                                     2
+c
+c                      2     2 1/2    2
+c     + 1/2 ln(a~ + (c~  + a~ )   ) c~
+c
+c> taylor(f,c);                                               
+c/  2     2\
+c|b~    a~ |   /           1                1   \   2   /  1        1   \   4
+c|--- - ---| + |-1/2 ln(- ----) + 1/2 ln(- ----)| c~  + |------ - ------| c~
+c\ 2     2 /   \          2 b~             2 a~ /       |     2        2|
+c                                                       \16 b~    16 a~ /
+c
+c           6
+c     + O(c~ )
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $     rval = -(b-a)*(a+b)/2 
-     $     -0.5d0*c**2 * (log(b/a) + c**2*(1/b**2-1/a**2)/4)
+     $     -0.5d0*c**2 * (log(b/a) + c**2*(1/b**2-1/a**2)/8)
         if( a .lt. 0 .and. b .lt. 0 ) 
      $     rval = +(b-a)*(a+b)/2 
-     $     +0.5d0*c**2 * (log(b/a) + c**2*(1/b**2-1/a**2)/4)
+     $     +0.5d0*c**2 * (log(b/a) + c**2*(1/b**2-1/a**2)/8)
         if( a .gt. 0 .and. b .lt. 0 ) rval = 0
         if( a .lt. 0 .and. b .gt. 0 ) rval = 0
         else        
@@ -1596,6 +1693,35 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0); 
+c> f := z*(log(b+sqrt(c**2+b**2)) - log(a+sqrt(c**2+a**2)));
+c                             2     2 1/2               2     2 1/2
+c          f := z (ln(b~ + (c~  + b~ )   ) - ln(a~ + (c~  + a~ )   ))
+c
+c> taylor(f,c);                                             
+c                            /  1       1  \   2     /    3        3   \   4
+cz (ln(2 b~) - ln(2 a~)) + z |----- - -----| c~  + z |- ------ + ------| c~  +
+c                            |    2       2|         |       4        4|
+c                            \4 b~    4 a~ /         \  32 b~    32 a~ /
+c
+c        6
+c    O(c~ )
+c
+c> assume(a<0); assume(b<0);                                  
+c> f := z*(log(b+sqrt(c**2+b**2)) - log(a+sqrt(c**2+a**2)));
+c                             2     2 1/2               2     2 1/2
+c          f := z (ln(b~ + (c~  + b~ )   ) - ln(a~ + (c~  + a~ )   ))
+c
+c> taylor(f,c);                                             
+c  /      1            1   \     /    1       1  \   2     /  3        3   \
+cz |ln(- ----) - ln(- ----)| + z |- ----- + -----| c~  + z |------ - ------|
+c  \     2 b~         2 a~ /     |      2       2|         |     4        4|
+c                                \  4 b~    4 a~ /         \32 b~    32 a~ /
+c
+c      4       6
+c    c~  + O(c~ )
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $     rval = +z*(log(b/a) + c**2*(1/b**2-1/a**2)/4)
         if( a .lt. 0 .and. b .lt. 0 ) 
@@ -1621,6 +1747,63 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);                                
+c> f := -b/sqrt(c**2+b**2)/c**2*(z**2*(1/(c**2+b**2)+2/c**2)-1)+
+c> a/sqrt(c**2+a**2)/c**2*(z**2*(1/(c**2+a**2)+2/c**2)-1);
+c               / 2 /    1        2 \    \      / 2 /    1        2 \    \
+c            b~ |z  |--------- + ---| - 1|   a~ |z  |--------- + ---| - 1|
+c               |   |  2     2     2|    |      |   |  2     2     2|    |
+c               \   \c~  + b~    c~ /    /      \   \c~  + a~    c~ /    /
+c     f := - ----------------------------- + -----------------------------
+c                    2     2 1/2   2                 2     2 1/2   2
+c                 (c~  + b~ )    c~               (c~  + a~ )    c~
+c
+c> taylor(f,c);                                                 
+c                 /         2                 2     \
+c                 |        z                 z      |
+c                 |        --- - 1           --- - 1|
+c                 |  2       2         2       2    |
+c                 | z      b~         z      a~     |       2
+c                 |----- + ------- - ----- - -------| + O(c~ )
+c                 |    4        2        4        2 |
+c                 \4 b~     2 b~     4 a~     2 a~  /
+c
+c> expand(%);
+c                   /   2               2         \
+c                   |3 z       1     3 z       1  |       2
+c                   |----- - ----- - ----- + -----| + O(c~ )
+c                   |    4       2       4       2|
+c                   \4 b~    2 b~    4 a~    2 a~ /
+c
+c> assume(a<0); assume(b<0);                                    
+c> f := -b/sqrt(c**2+b**2)/c**2*(z**2*(1/(c**2+b**2)+2/c**2)-1)+
+c> a/sqrt(c**2+a**2)/c**2*(z**2*(1/(c**2+a**2)+2/c**2)-1);
+c               / 2 /    1        2 \    \      / 2 /    1        2 \    \
+c            b~ |z  |--------- + ---| - 1|   a~ |z  |--------- + ---| - 1|
+c               |   |  2     2     2|    |      |   |  2     2     2|    |
+c               \   \c~  + b~    c~ /    /      \   \c~  + a~    c~ /    /
+c     f := - ----------------------------- + -----------------------------
+c                    2     2 1/2   2                 2     2 1/2   2
+c                 (c~  + b~ )    c~               (c~  + a~ )    c~
+c
+c> taylor(f,c);                                                 
+c                /           2                 2     \
+c                |          z                 z      |
+c                |          --- - 1           --- - 1|
+c                |    2       2         2       2    |
+c                |   z      b~         z      a~     |       2
+c                |- ----- - ------- + ----- + -------| + O(c~ )
+c                |      4        2        4        2 |
+c                \  4 b~     2 b~     4 a~     2 a~  /
+c
+c> expand(%);                                                   
+c                  /     2               2         \
+c                  |  3 z       1     3 z       1  |       2
+c                  |- ----- + ----- + ----- - -----| + O(c~ )
+c                  |      4       2       4       2|
+c                  \  4 b~    2 b~    4 a~    2 a~ /
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $     rval = +.5d0*(1/a**2-1/b**2)
 ccc     $            -.75d0*z**2*(1/a**4-1/b**4)
@@ -1682,6 +1865,59 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);                                 
+c> f := -(log(b+sqrt(b**2+c**2))-z**2*b/(c**2)/sqrt(b**2+c**2))
+c> +(log(a+sqrt(a**2+c**2))-z**2*a/(c**2)/sqrt(a**2+c**2)); 
+c                                       2
+c                 2     2 1/2          z  b~                     2     2 1/2
+cf := -ln(b~ + (c~  + b~ )   ) + ------------------ + ln(a~ + (c~  + a~ )   )
+c                                  2    2     2 1/2
+c                                c~  (c~  + b~ )
+c
+c              2
+c             z  a~
+c     - ------------------
+c         2    2     2 1/2
+c       c~  (c~  + a~ )
+c
+c> 
+c> 
+c> series(f,c);
+c/    2       2                        \   /   2       2                 \
+c|   z       z                         |   |3 z     3 z       1       1  |   2
+c|- ----- + ----- - ln(2 b~) + ln(2 a~)| + |----- - ----- - ----- + -----| c~
+c|      2       2                      |   |    4       4       2       2|
+c\  2 b~    2 a~                       /   \8 b~    8 a~    4 b~    4 a~ /
+c
+c           4
+c     + O(c~ )
+c
+c> assume(a<0); assume(b<0);    
+c> f := -(log(b+sqrt(b**2+c**2))-z**2*b/(c**2)/sqrt(b**2+c**2))
+c> +(log(a+sqrt(a**2+c**2))-z**2*a/(c**2)/sqrt(a**2+c**2)); 
+c                                       2
+c                 2     2 1/2          z  b~                     2     2 1/2
+cf := -ln(b~ + (c~  + b~ )   ) + ------------------ + ln(a~ + (c~  + a~ )   )
+c                                  2    2     2 1/2
+c                                c~  (c~  + b~ )
+c
+c              2
+c             z  a~
+c     - ------------------
+c         2    2     2 1/2
+c       c~  (c~  + a~ )
+c
+c> series(f,c);                                                
+c/  2       2                            \   /     2       2                 \
+c| z       z            1            1   |   |  3 z     3 z       1       1  |
+c|----- - ----- - ln(- ----) + ln(- ----)| + |- ----- + ----- + ----- - -----|
+c|    2       2        2 b~         2 a~ |   |      4       4       2       2|
+c\2 b~    2 a~                           /   \  8 b~    8 a~    4 b~    4 a~ /
+c
+c      2       4
+c    c~  + O(c~ )
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $     rval = -(log(b/a) + c**2*(1/b**2-1/a**2)/4)
      $            +z**2/2*(1/a**2-1/b**2)
@@ -1742,6 +1978,58 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx := b;
+cr := sqrt(x**2+c**2);
+cfb := z**3*x*(3*c**2+2*x*x)/(c**2)**2/r**3 - 3*z*x/(c**2)/r;
+c
+cx := a;
+cr := sqrt(x**2+c**2);
+cfa := z**3*x*(3*c**2+2*x*x)/(c**2)**2/r**3 - 3*z*x/(c**2)/r;
+c
+cf := -fb + fa;
+c
+c
+c> assume(a>0); assume(b>0);                                      
+c        3         2       2                          3         2       2
+c       z  b~ (3 c~  + 2 b~ )         3 z b~         z  a~ (3 c~  + 2 a~ )
+cf := - --------------------- + ------------------ + ---------------------
+c          4    2     2 3/2       2    2     2 1/2      4    2     2 3/2
+c        c~  (b~  + c~ )        c~  (b~  + c~ )       c~  (a~  + c~ )
+c
+c             3 z a~
+c     - ------------------
+c         2    2     2 1/2
+c       c~  (a~  + c~ )
+c
+c> series(f,c);                                                
+c                   /   3               3         \
+c                   |3 z      3 z    3 z      3 z |       2
+c                   |----- - ----- - ----- + -----| + O(c~ )
+c                   |    4       2       4       2|
+c                   \4 b~    2 b~    4 a~    2 a~ /
+c
+c
+c> assume(a<0); assume(b<0);    
+c        3         2       2                          3         2       2
+c       z  b~ (3 c~  + 2 b~ )         3 z b~         z  a~ (3 c~  + 2 a~ )
+cf := - --------------------- + ------------------ + ---------------------
+c          4    2     2 3/2       2    2     2 1/2      4    2     2 3/2
+c        c~  (b~  + c~ )        c~  (b~  + c~ )       c~  (a~  + c~ )
+c
+c             3 z a~
+c     - ------------------
+c         2    2     2 1/2
+c       c~  (a~  + c~ )
+c
+c> 
+c> series(f,c);             
+c                  /     3               3         \
+c                  |  3 z      3 z    3 z      3 z |       2
+c                  |- ----- + ----- + ----- - -----| + O(c~ )
+c                  |      4       2       4       2|
+c                  \  4 b~    2 b~    4 a~    2 a~ /
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $     rval = -1.5d0*z*(1/b**2-1/a**2)
 ccc     $            +.75d0*z**3*(1/b**4-1/a**4) 
@@ -1830,6 +2118,30 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);                                   
+c> f := (sqrt(b**2+c**2)-sqrt(a**2+c**2))*cosa;
+c
+c                           2     2 1/2      2     2 1/2
+c                  f := ((c~  + b~ )    - (c~  + a~ )   ) cosa
+c
+c> series(f,c);                                
+c                  / 1      1  \        2   /    1       1  \        4       6
+c (b~ - a~) cosa + |---- - ----| cosa c~  + |- ----- + -----| cosa c~  + O(c~ )
+c                  \2 b~   2 a~/            |      3       3|
+c                                           \  8 b~    8 a~ /
+c
+c> assume(a<0); assume(b<0);                   
+c> f := (sqrt(b**2+c**2)-sqrt(a**2+c**2))*cosa;
+c                           2     2 1/2      2     2 1/2
+c                  f := ((c~  + b~ )    - (c~  + a~ )   ) cosa
+c
+c> series(f,c);                                
+c                  /   1      1  \        2   /  1       1  \        4       6
+c(-b~ + a~) cosa + |- ---- + ----| cosa c~  + |----- - -----| cosa c~  + O(c~ )
+c                  \  2 b~   2 a~/            |    3       3|
+c                                             \8 b~    8 a~ /
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $    rval = -((b-a)+0.5d0*(1/b-1/a)*c**2) *cosa
      $     -(log(b/a) + c**2*(1/b**2-1/a**2)/4)*y*sina
@@ -1888,6 +2200,48 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx := b;
+cr := sqrt(x**2+c**2);
+cfb := 1/r*cosa-y*x/c**2/r*sina;
+cx := a;
+cr := sqrt(x**2+c**2);
+cfa := 1/r*cosa-y*x/c**2/r*sina;
+cf := fb-fa;
+c
+c> assume(a>0); assume(b>0);   
+c> f := fb-fa;
+c          cosa            y~ b~ sina            cosa            y~ a~ sina
+cf := -------------- - ------------------ - -------------- + ------------------
+c        2     2 1/2     2    2     2 1/2      2     2 1/2     2    2     2 1/2
+c     (b~  + c~ )      c~  (b~  + c~ )      (a~  + c~ )      c~  (a~  + c~ )
+c
+c> series(f,c);
+c/y~ sina   y~ sina   cosa   cosa\   /  3 y~ sina   3 y~ sina   cosa    cosa \
+c|------- - ------- + ---- - ----| + |- --------- + --------- - ----- + -----|
+c|     2         2     b~     a~ |   |        4           4         3       3|
+c\ 2 b~      2 a~                /   \    8 b~        8 a~      2 b~    2 a~ /
+c
+c      2       4
+c    c~  + O(c~ )
+c
+c> assume(a<0); assume(b<0);
+c> f := fb-fa;
+c          cosa            y~ b~ sina            cosa            y~ a~ sina
+cf := -------------- - ------------------ - -------------- + ------------------
+c        2     2 1/2     2    2     2 1/2      2     2 1/2     2    2     2 1/2
+c     (b~  + c~ )      c~  (b~  + c~ )      (a~  + c~ )      c~  (a~  + c~ )
+c
+c> 
+c> series(f,c);
+c/  y~ sina   y~ sina   cosa   cosa\   /3 y~ sina   3 y~ sina   cosa    cosa \
+c|- ------- + ------- - ---- + ----| + |--------- - --------- + ----- - -----|
+c|       2         2     b~     a~ |   |      4           4         3       3|
+c\   2 b~      2 a~                /   \  8 b~        8 a~      2 b~    2 a~ /
+c
+c      2       4
+c    c~  + O(c~ )
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $     rval = cosa*(1/b-1/a)+y*sina/2*(1/b**2-1/a**2)
         if( a .lt. 0 .and. b .lt. 0 ) 
@@ -1943,6 +2297,61 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx := b;
+cr := sqrt(x**2+c**2);
+cfb := -z/r**3*cosa
+c   +z*y*x*(3*c**2+2*x**2)/c**4/r**3*sina;
+c
+cx := a;
+cr := sqrt(x**2+c**2);
+cfa := -z/r**3*cosa
+c   +z*y*x*(3*c**2+2*x**2)/c**4/r**3*sina;
+c
+cf := fb-fa;
+c
+cassume(a>0); assume(b>0);
+c
+cassume(a<0); assume(b<0);
+c
+cseries(f,c);
+c
+c> assume(a>0); assume(b>0);
+c> fb := -z/r**3*cosa
+c>    +z*y*x*(3*c**2+2*x**2)/c**4/r**3*sina;
+c                                                   2       2
+c                         z cosa       z y~ b~ (3 c~  + 2 b~ ) sina
+c             fb := - -------------- + ----------------------------
+c                        2     2 3/2          4    2     2 3/2
+c                     (b~  + c~ )           c~  (b~  + c~ )
+c
+c> 
+c> series(f,c);
+c           /  3 z y~ sina   z cosa   z cosa   3 z y~ sina\       2
+c           |- ----------- - ------ + ------ + -----------| + O(c~ )
+c           |         4         3        3            4   |
+c           \     4 b~        b~       a~         4 a~    /
+c
+c> assume(a<0); assume(b<0);
+c> f := fb-fa;
+c                                     2       2
+c           z cosa       z y~ b~ (3 c~  + 2 b~ ) sina       z cosa
+cf := - -------------- + ---------------------------- + --------------
+c          2     2 3/2          4    2     2 3/2           2     2 3/2
+c       (b~  + c~ )           c~  (b~  + c~ )           (a~  + c~ )
+c
+c                    2       2
+c       z y~ a~ (3 c~  + 2 a~ ) sina
+c     - ----------------------------
+c              4    2     2 3/2
+c            c~  (a~  + c~ )
+c
+c> series(f,c);
+c            /3 z y~ sina   z cosa   z cosa   3 z y~ sina\       2
+c            |----------- + ------ - ------ - -----------| + O(c~ )
+c            |       4         3        3            4   |
+c            \   4 b~        b~       a~         4 a~    /
+
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = -z*cosa*(1/b**3-1/a**3) 
 ccc     $          -z*y*sina*.75d0*(1/b**4-1/a**4) 
@@ -2014,6 +2423,73 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);
+c> f:=-(fb-fa);
+c             3     2                           2     2         2       2
+c           b~  cosa         2 y~ cosa sina   y~  sina  b~ (3 c~  + 2 b~ )
+cf := - ------------------ + -------------- - ----------------------------
+c         2    2     2 3/2      2     2 3/2          4    2     2 3/2
+c       c~  (b~  + c~ )      (b~  + c~ )           c~  (b~  + c~ )
+c
+c                                  3     2
+c               b~               a~  cosa         2 y~ cosa sina
+c     + ------------------ + ------------------ - --------------
+c         2    2     2 1/2     2    2     2 3/2      2     2 3/2
+c       c~  (b~  + c~ )      c~  (a~  + c~ )      (a~  + c~ )
+c
+c         2     2         2       2
+c       y~  sina  a~ (3 c~  + 2 a~ )           a~
+c     + ---------------------------- - ------------------
+c              4    2     2 3/2          2    2     2 1/2
+c            c~  (a~  + c~ )           c~  (a~  + c~ )
+c
+c> series(f,c);
+c/      2         2                        2     2
+c|3 cosa    3 cosa    2 y~ cosa sina   3 y~  sina    2 y~ cosa sina     1
+c|------- - ------- + -------------- + ----------- - -------------- - -----
+c|     2         2           3                4             3             2
+c\ 2 b~      2 a~          b~             4 b~            a~          2 b~
+c
+c                   2     2\
+c         1     3 y~  sina |       2
+c     + ----- - -----------| + O(c~ )
+c           2          4   |
+c       2 a~       4 a~    /
+c
+c> assume(a<0); assume(b<0);
+c> f:=-(fb-fa);
+c             3     2                           2     2         2       2
+c           b~  cosa         2 y~ cosa sina   y~  sina  b~ (3 c~  + 2 b~ )
+cf := - ------------------ + -------------- - ----------------------------
+c         2    2     2 3/2      2     2 3/2          4    2     2 3/2
+c       c~  (b~  + c~ )      (b~  + c~ )           c~  (b~  + c~ )
+c
+c                                  3     2
+c               b~               a~  cosa         2 y~ cosa sina
+c     + ------------------ + ------------------ - --------------
+c         2    2     2 1/2     2    2     2 3/2      2     2 3/2
+c       c~  (b~  + c~ )      c~  (a~  + c~ )      (a~  + c~ )
+c
+c         2     2         2       2
+c       y~  sina  a~ (3 c~  + 2 a~ )           a~
+c     + ---------------------------- - ------------------
+c              4    2     2 3/2          2    2     2 1/2
+c            c~  (a~  + c~ )           c~  (a~  + c~ )
+c
+c> series(f,c);
+c/        2         2                        2     2
+c|  3 cosa    3 cosa    2 y~ cosa sina   3 y~  sina    2 y~ cosa sina     1
+c|- ------- + ------- - -------------- - ----------- + -------------- + -----
+c|       2         2           3                4             3             2
+c\   2 b~      2 a~          b~             4 b~            a~          2 b~
+c
+c                   2     2\
+c         1     3 y~  sina |       2
+c     - ----- + -----------| + O(c~ )
+c           2          4   |
+c       2 a~       4 a~    /
+
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = +1.5d0*cosa**2*(1/b**2-1/a**2) 
      $          -0.5d0*(1/b**2-1/a**2)
@@ -2098,6 +2574,99 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);
+c> 
+c> x:=b;
+c                                    x := b~
+c
+c> r:=sqrt(x**2+c**2);
+c                                      2     2 1/2
+c                              r := (b~  + c~ )
+c
+c> fb:=z/r*cosa-y*x*z/c**2/r*sina;
+c                             z cosa          y~ b~ z sina
+c                   fb := -------------- - ------------------
+c                            2     2 1/2     2    2     2 1/2
+c                         (b~  + c~ )      c~  (b~  + c~ )
+c
+c> x:=a;
+c                                    x := a~
+c
+c> r:=sqrt(x**2+c**2);
+c                                      2     2 1/2
+c                              r := (a~  + c~ )
+c
+c> fa:=z/r*cosa-y*x*z/c**2/r*sina;
+c                             z cosa          y~ a~ z sina
+c                   fa := -------------- - ------------------
+c                            2     2 1/2     2    2     2 1/2
+c                         (a~  + c~ )      c~  (a~  + c~ )
+c
+c> f:=fb-fa;
+c         z cosa          y~ b~ z sina          z cosa          y~ a~ z sina
+cf := -------------- - ------------------ - -------------- + ------------------
+c        2     2 1/2     2    2     2 1/2      2     2 1/2     2    2     2 1/2
+c     (b~  + c~ )      c~  (b~  + c~ )      (a~  + c~ )      c~  (a~  + c~ )
+c
+c> series(f,c);
+c/y~ z sina   y~ z sina   z cosa   z cosa\
+c|--------- - --------- + ------ - ------| +
+c|      2           2       b~       a~  |
+c\  2 b~        2 a~                     /
+c
+c    /  3 y~ z sina   3 y~ z sina   z cosa   z cosa\   2       4
+c    |- ----------- + ----------- - ------ + ------| c~  + O(c~ )
+c    |         4             4          3        3 |
+c    \     8 b~          8 a~       2 b~     2 a~  /
+c
+c> assume(a<0); assume(b<0);
+c> 
+c> x:=b;
+c                                    x := b~
+c
+c> r:=sqrt(x**2+c**2);
+c                                      2     2 1/2
+c                              r := (b~  + c~ )
+c
+c> fb:=z/r*cosa-y*x*z/c**2/r*sina;
+c                             z cosa          y~ b~ z sina
+c                   fb := -------------- - ------------------
+c                            2     2 1/2     2    2     2 1/2
+c                         (b~  + c~ )      c~  (b~  + c~ )
+c
+c> x:=a;
+c                                    x := a~
+c
+c> r:=sqrt(x**2+c**2);
+c                                      2     2 1/2
+c                              r := (a~  + c~ )
+c
+c> fa:=z/r*cosa-y*x*z/c**2/r*sina;
+c                             z cosa          y~ a~ z sina
+c                   fa := -------------- - ------------------
+c                            2     2 1/2     2    2     2 1/2
+c                         (a~  + c~ )      c~  (a~  + c~ )
+c
+c> f:=fb-fa;
+c         z cosa          y~ b~ z sina          z cosa          y~ a~ z sina
+cf := -------------- - ------------------ - -------------- + ------------------
+c        2     2 1/2     2    2     2 1/2      2     2 1/2     2    2     2 1/2
+c     (b~  + c~ )      c~  (b~  + c~ )      (a~  + c~ )      c~  (a~  + c~ )
+c
+c> 
+c> series(f,c);
+c/  y~ z sina   y~ z sina   z cosa   z cosa\
+c|- --------- + --------- - ------ + ------| +
+c|        2           2       b~       a~  |
+c\    2 b~        2 a~                     /
+c
+c    /3 y~ z sina   3 y~ z sina   z cosa   z cosa\   2       4
+c    |----------- - ----------- + ------ - ------| c~  + O(c~ )
+c    |       4             4          3        3 |
+c    \   8 b~          8 a~       2 b~     2 a~  /
+c
+
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = +z*cosa*(1/b-1/a) +.5d0*z*y*sina*(1/b**2-1/a**2)
         if( a .lt. 0 .and. b .lt. 0 ) 
@@ -2173,6 +2742,106 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+c> assume(a>0); assume(b>0);
+c
+c> f := fb-fa;
+c         2 /        b~                    2     2 1/2 \   2 y~ cosa sina
+cf := cosa  |- -------------- + ln(b~ + (b~  + c~ )   )| - --------------
+c           |     2     2 1/2                          |      2     2 1/2
+c           \  (b~  + c~ )                             /   (b~  + c~ )
+c
+c            2     2
+c          y~  sina  b~                 2     2 1/2
+c     + ------------------ - ln(b~ + (b~  + c~ )   )
+c         2    2     2 1/2
+c       c~  (b~  + c~ )
+c
+c           2 /        a~                    2     2 1/2 \   2 y~ cosa sina
+c     - cosa  |- -------------- + ln(a~ + (a~  + c~ )   )| + --------------
+c             |     2     2 1/2                          |      2     2 1/2
+c             \  (a~  + c~ )                             /   (a~  + c~ )
+c
+c            2     2
+c          y~  sina  a~                 2     2 1/2
+c     - ------------------ + ln(a~ + (a~  + c~ )   )
+c         2    2     2 1/2
+c       c~  (a~  + c~ )
+c
+c> expand(series(f,c));
+c/    2     2                             2     2
+c|  y~  sina                 2          y~  sina        2
+c|- --------- + ln(a~) + cosa  ln(b~) + --------- - cosa  ln(a~)
+c|        2                                   2
+c\    2 b~                                2 a~
+c
+c                                               \   /    2     2         2
+c       2 y~ cosa sina   2 y~ cosa sina         |   |3 y~  sina    3 cosa
+c     - -------------- + -------------- - ln(b~)| + |----------- + -------
+c             b~               a~               |   |       4           2
+c                                               /   \   8 b~        4 b~
+c
+c           2     2                                        2               \
+c       3 y~  sina    y~ cosa sina     1       1     3 cosa    y~ cosa sina|
+c     - ----------- + ------------ + ----- - ----- - ------- - ------------|
+c              4            3            2       2        2          3     |
+c          8 a~           b~         4 a~    4 b~     4 a~         a~      /
+c
+c      2       4
+c    c~  + O(c~ )
+c
+c
+c> assume(a<0); assume(b<0);
+c
+c> f := fb-fa;
+c         2 /        b~                    2     2 1/2 \   2 y~ cosa sina
+cf := cosa  |- -------------- + ln(b~ + (b~  + c~ )   )| - --------------
+c           |     2     2 1/2                          |      2     2 1/2
+c           \  (b~  + c~ )                             /   (b~  + c~ )
+c
+c            2     2
+c          y~  sina  b~                 2     2 1/2
+c     + ------------------ - ln(b~ + (b~  + c~ )   )
+c         2    2     2 1/2
+c       c~  (b~  + c~ )
+c
+c           2 /        a~                    2     2 1/2 \   2 y~ cosa sina
+c     - cosa  |- -------------- + ln(a~ + (a~  + c~ )   )| + --------------
+c             |     2     2 1/2                          |      2     2 1/2
+c             \  (a~  + c~ )                             /   (a~  + c~ )
+c
+c            2     2
+c          y~  sina  a~                 2     2 1/2
+c     - ------------------ + ln(a~ + (a~  + c~ )   )
+c         2    2     2 1/2
+c       c~  (a~  + c~ )
+c
+c> expand(series(f,c));
+c/  2     2                                     2     2
+c|y~  sina          1          2       1      y~  sina        2       1
+c|--------- + ln(- ----) + cosa  ln(- ----) - --------- - cosa  ln(- ----)
+c|      2           a~                 b~           2                 a~
+c\  2 b~                                        2 a~
+c
+c                                                   \   /      2     2
+c       2 y~ cosa sina   2 y~ cosa sina         1   |   |  3 y~  sina
+c     + -------------- - -------------- - ln(- ----)| + |- -----------
+c             b~               a~               b~  |   |         4
+c                                                   /   \     8 b~
+c
+c             2       2     2                                        2
+c       3 cosa    3 y~  sina    y~ cosa sina     1       1     3 cosa
+c     - ------- + ----------- - ------------ - ----- + ----- + -------
+c            2           4            3            2       2        2
+c        4 b~        8 a~           b~         4 a~    4 b~     4 a~
+c
+c                   \
+c       y~ cosa sina|   2       4
+c     + ------------| c~  + O(c~ )
+c             3     |
+c           a~      /
+c
+
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = 
      $          -2*y*cosa*sina*(1/b-1/a)
@@ -2263,6 +2932,57 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx:=b;
+cr:=sqrt(x**2+c**2);
+cfb:=x**3*cosa**2/c**2/r**3;
+cfb:=fb-2*y*cosa*sina/r**3;
+cfb:=fb+y**2*sina**2*x/c**2/r**3;
+cfb:=fb+y**2*sina**2*x*2/c**4/r;
+cfb:=fb-x/c**2/r;
+cx:=a;
+cr:=sqrt(x**2+c**2);
+cfa:=x**3*cosa**2/c**2/r**3;
+cfa:=fa-2*y*cosa*sina/r**3;
+cfa:=fa+y**2*sina**2*x/c**2/r**3;
+cfa:=fa+y**2*sina**2*x*2/c**4/r;
+cfa:=fa-x/c**2/r;
+cf := -z*(fb-fa);
+c
+c
+c> assume(a>0); assume(b>0);
+c
+c> series(f,c);
+c     /        2       2     2
+c     |  3 cosa    3 y~  sina    2 y~ cosa sina     1     2 y~ cosa sina
+c - z |- ------- - ----------- + -------------- + ----- - --------------
+c     |       2           4             3             2          3
+c     \   2 b~        4 b~            a~          2 b~         b~
+c
+c             2       2     2        \
+c       3 cosa    3 y~  sina      1  |       2
+c     + ------- + ----------- - -----| + O(c~ )
+c            2           4          2|
+c        2 a~        4 a~       2 a~ /
+c
+c
+c> assume(a<0); assume(b<0);
+c
+c> 
+c> series(f,c);
+c     /      2       2     2
+c     |3 cosa    3 y~  sina    2 y~ cosa sina     1     2 y~ cosa sina
+c - z |------- + ----------- - -------------- - ----- + --------------
+c     |     2           4             3             2          3
+c     \ 2 b~        4 b~            a~          2 b~         b~
+c
+c             2       2     2        \
+c       3 cosa    3 y~  sina      1  |       2
+c     - ------- - ----------- + -----| + O(c~ )
+c            2           4          2|
+c        2 a~        4 a~       2 a~ /
+
+
         if( a .gt. 0 .and. b .gt. 0 ) then
          rval = +1.5d0*cosa**2*(1/b**2-1/a**2)
      $          +2*y*cosa*sina*(1/b**3-1/a**3)
@@ -2366,6 +3086,47 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx:=b;
+cr:=sqrt(x**2+c**2);
+cfb:=1/r*cosa-y*x/c**2/r*sina;
+cfb:=fb-cosa*z**2/r**3;
+cfb:=fb+sina*z**2*y*x*(1/(c**2)/r**3+2/(c**2)**2/r);
+cx:=a;
+cr:=sqrt(x**2+c**2);
+cfa:=1/r*cosa-y*x/c**2/r*sina;
+cfa:=fa-cosa*z**2/r**3;
+cfa:=fa+sina*z**2*y*x*(1/(c**2)/r**3+2/(c**2)**2/r);
+cf := fb-fa;
+c
+c> assume(a>0); assume(b>0);
+c> series(f,c);
+c/                                     2                     2            2
+c|  y~ sina   y~ sina   cosa   3 sina z  y~   cosa   3 sina z  y~   cosa z
+c|- ------- + ------- - ---- + ------------ + ---- - ------------ + -------
+c|       2         2     a~           4        b~           4           3
+c\   2 a~      2 b~               4 a~                  4 b~          a~
+c
+c             2\
+c       cosa z |       2
+c     - -------| + O(c~ )
+c           3  |
+c         b~   /
+c
+c> assume(a<0); assume(b<0);
+c> series(f,c);
+c/                                   2                     2            2
+c|y~ sina   y~ sina   cosa   3 sina z  y~   cosa   3 sina z  y~   cosa z
+c|------- - ------- + ---- - ------------ - ---- + ------------ - -------
+c|     2         2     a~           4        b~           4           3
+c\ 2 a~      2 b~               4 a~                  4 b~          a~
+c
+c             2\
+c       cosa z |       2
+c     + -------| + O(c~ )
+c           3  |
+c         b~   /
+c
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = +cosa*(1/b-1/a)
      $          +.5d0*y*sina*(1/b**2-1/a**2)
@@ -2470,6 +3231,64 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx:=b;
+cr:=sqrt(x**2+c**2);
+cfb:=3/r*cosa-3*y*x/c**2/r*sina;
+cfb:=fb-cosa**3*(3*x*x+2*c**2)/r**3;
+cfb:=fb+3*cosa**2*sina*y*x**3/(c**2)/r**3;
+cfb:=fb-3*cosa*sina**2*y*y/r**3;
+cfb:=fb+sina**3*y**3*x*(3*c**2+2*x*x)/(c**2)**2/r**3;
+cx:=a;
+cr:=sqrt(x**2+c**2);
+cfa:=3/r*cosa-3*y*x/c**2/r*sina;
+cfa:=fa-cosa**3*(3*x*x+2*c**2)/r**3;
+cfa:=fa+3*cosa**2*sina*y*x**3/(c**2)/r**3;
+cfa:=fa-3*cosa*sina**2*y*y/r**3;
+cfa:=fa+sina**3*y**3*x*(3*c**2+2*x*x)/(c**2)**2/r**3;
+cf := fb-fa;
+c
+c> assume(a>0); assume(b>0);
+c> series(f,c);
+c/                                                  3         2
+c|  3 y~ sina   3 cosa   3 cosa   3 y~ sina   3 cosa    9 cosa  sina y~
+c|- --------- - ------ + ------ + --------- + ------- + ---------------
+c|        2       a~       b~           2       a~               2
+c\    2 a~                          2 b~                     2 a~
+c
+c             3         2                      2   2         3   3
+c       3 cosa    9 cosa  sina y~   3 cosa sina  y~    3 sina  y~
+c     - ------- - --------------- + ---------------- + -----------
+c         b~               2                3                 4
+c                      2 b~               a~              4 a~
+c
+c                  2   2         3   3\
+c       3 cosa sina  y~    3 sina  y~ |       2
+c     - ---------------- - -----------| + O(c~ )
+c               3                 4   |
+c             b~              4 b~    /
+c
+c> assume(a<0); assume(b<0);
+c> series(f,c);
+c/                                                3         2                 3
+c|3 y~ sina   3 cosa   3 cosa   3 y~ sina   3 cosa    9 cosa  sina y~   3 cosa
+c|--------- + ------ - ------ - --------- - ------- - --------------- + -------
+c|      2       a~       b~           2       a~               2          b~
+c\  2 a~                          2 b~                     2 a~
+c
+c             2                      2   2         3   3              2   2
+c       9 cosa  sina y~   3 cosa sina  y~    3 sina  y~    3 cosa sina  y~
+c     + --------------- - ---------------- - ----------- + ----------------
+c                2                3                 4              3
+c            2 b~               a~              4 a~             b~
+c
+c             3   3\
+c       3 sina  y~ |       2
+c     + -----------| + O(c~ )
+c              4   |
+c          4 b~    /
+c
+
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = +3*cosa*(1/b-1/a)
      $          +1.5d0*y*sina*(1/b**2-1/a**2)
@@ -2594,19 +3413,98 @@ c
         if( abs(c) .lt. 1d-8*abs(a) ) iftaylor=1
         if( abs(c) .lt. 1d-8*abs(b) ) iftaylor=1
         if( iftaylor .eq. 1 ) then
+c
+cx:=b;
+cr:=sqrt(x**2+c**2);
+cfb:=1/r*cosa-y*x/c**2/r*sina;
+cfb:=fb-cosa*sina**2*(3*x*x+2*c**2)/r**3;
+cfb:=fb+(-2*cosa**2*sina+sina**3)*y*x**3/(c**2)/r**3;
+cfb:=fb-(cosa**3-2*cosa*sina**2)*y*y/r**3;
+cfb:=fb+sina*cosa**2*y**3*x*(3*c**2+2*x*x)/(c**2)**2/r**3;
+cx:=a;
+cr:=sqrt(x**2+c**2);
+cfa:=1/r*cosa-y*x/c**2/r*sina;
+cfa:=fa-cosa*sina**2*(3*x*x+2*c**2)/r**3;
+cfa:=fa+(-2*cosa**2*sina+sina**3)*y*x**3/(c**2)/r**3;
+cfa:=fa-(cosa**3-2*cosa*sina**2)*y*y/r**3;
+cfa:=fa+sina*cosa**2*y**3*x*(3*c**2+2*x*x)/(c**2)**2/r**3;
+cf := fb-fa;
+c
+c
+cassume(a>0); assume(b>0);
+c
+cassume(a<0); assume(b<0);
+c
+cseries(f,c);
+c
+c> assume(a>0); assume(b>0);
+c> series(f,c);
+c/                                               2
+c|  y~ sina   cosa   cosa   y~ sina   3 cosa sina
+c|- ------- - ---- + ---- + ------- + ------------
+c|       2     a~     b~         2         a~
+c\   2 a~                    2 b~
+c
+c                 2            3                  2
+c       3 (-2 cosa  sina + sina ) y~   3 cosa sina
+c     + ---------------------------- - ------------
+c                      2                    b~
+c                  2 a~
+c
+c                 2            3            3              2    2
+c       3 (-2 cosa  sina + sina ) y~   (cosa  - 2 cosa sina ) y~
+c     - ---------------------------- + --------------------------
+c                      2                            3
+c                  2 b~                           a~
+c
+c             2        3        3              2    2         2        3\
+c       3 cosa  sina y~    (cosa  - 2 cosa sina ) y~    3 cosa  sina y~ |
+c     + ---------------- - -------------------------- - ----------------| +
+c                4                      3                        4      |
+c            4 a~                     b~                     4 b~       /
+c
+c        2
+c    O(c~ )
+c
+c
+c> assume(a<0); assume(b<0);
+c> series(f,c);
+c/                                             2             2            3
+c|y~ sina   cosa   cosa   y~ sina   3 cosa sina    3 (-2 cosa  sina + sina ) y~
+c|------- + ---- - ---- - ------- - ------------ - ----------------------------
+c|     2     a~     b~         2         a~                       2
+c\ 2 a~                    2 b~                               2 a~
+c
+c                  2             2            3
+c       3 cosa sina    3 (-2 cosa  sina + sina ) y~
+c     + ------------ + ----------------------------
+c            b~                       2
+c                                 2 b~
+c
+c            3              2    2         2        3
+c       (cosa  - 2 cosa sina ) y~    3 cosa  sina y~
+c     - -------------------------- - ----------------
+c                    3                        4
+c                  a~                     4 a~
+c
+c            3              2    2         2        3\
+c       (cosa  - 2 cosa sina ) y~    3 cosa  sina y~ |       2
+c     + -------------------------- + ----------------| + O(c~ )
+c                    3                        4      |
+c                  b~                     4 b~       /
         if( a .gt. 0 .and. b .gt. 0 ) 
      $   rval = +cosa*(1/b-1/a)
      $          +0.5d0*y*sina*(1/b**2-1/a**2)
      $          -3*cosa*sina**2*(1/b-1/a)
      $          -1.5d0*(-2*cosa**2*sina+sina**3)*y*(1/b**2-1/a**2)
-     $          -(cosa**3-2*cosa**sina**2)*y*y*(1/b**3-1/a**3)
+     $          -(cosa**3-2*cosa*sina**2)*y*y*(1/b**3-1/a**3)
 ccc     $          -.75d0*cosa**2*sina*y**3*(1/b**4-1/a**4)
         if( a .lt. 0 .and. b .lt. 0 ) 
      $   rval = -cosa*(1/b-1/a)
      $          -0.5d0*y*sina*(1/b**2-1/a**2)
      $          +3*cosa*sina**2*(1/b-1/a)
      $          +1.5d0*(-2*cosa**2*sina+sina**3)*y*(1/b**2-1/a**2)
-     $          +(cosa**3-2*cosa**sina**2)*y*y*(1/b**3-1/a**3)
+     $          +(cosa**3-2*cosa*sina**2)*y*y*(1/b**3-1/a**3)
 ccc     $          +.75d0*cosa**2*sina*y**3*(1/b**4-1/a**4)
         if( a .gt. 0 .and. b .lt. 0 ) rval = 0
         if( a .lt. 0 .and. b .gt. 0 ) rval = 0

@@ -1,0 +1,16 @@
+Error (3): Object p cannot be output
+Error (4): Object p cannot be output
+Error (5): Scalar y cannot be output
+Error (6): Scalar y cannot be output
+Error (7): String s1 cannot be output without size
+Error (8): String s1 cannot be output without size
+Error (9): Object p cannot be output
+Error (10): Object p cannot be output
+Error (11): Object p cannot be output
+Error (12): Object p cannot be output
+Error (13): Output array z must have dims
+Error (14): Output array z must have dims
+Error (15): Output array z must have dims
+Error (16): Array z should be 1D or 2D
+Unrecognized typespace: bozo
+test_typecheck.mw: 15 type errors detected

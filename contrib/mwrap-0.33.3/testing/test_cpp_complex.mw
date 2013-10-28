@@ -1,0 +1,23 @@
+function test_cpp_complex;
+
+$ #include <complex>
+$ using std::complex;
+$ using std::conj;
+$
+$ complex<double> zsum(complex<double>* zarray, int n) {
+$     complex<double> sum(0);
+$     for (int i = 0; i < n; ++i) sum += zarray[i];
+$     return sum;
+$ }
+
+zarray = rand(10,1) + 1i*rand(10,1);
+n = length(zarray);
+# dcomplex result = zsum(dcomplex[] zarray, int n);
+tassert(abs(result-sum(zarray)) < 1e-10*norm(zarray), 'C++ complex support');
+# dcomplex cresult = conj(dcomplex result);
+tassert(conj(result) == cresult, 'C++ complex support (2)');
+
+
+function tassert(pred, msg)
+if ~pred, fprintf('Failure: %s\n', msg); end
+

@@ -1,0 +1,82 @@
+#
+#  Generate Matlab/Octave MEX files
+#
+#  gfortran > 4.4.0 is strongly recommended
+#
+
+PROJECT = fmm3d_r2012a
+MEX_GATEWAY = $(PROJECT)
+
+
+
+###TARGET=octave-linux
+TARGET=octave-linux-openmp
+
+###TARGET=octave-linux-intel
+###TARGET=octave-linux-intel-openmp
+
+###TARGET=matlab-linux-a64
+###TARGET=matlab-linux-a64-openmp
+
+###TARGET=matlab-maci
+###TARGET=matlab-maci-openmp
+###TARGET=matlab-maci64
+###TARGET=matlab-maci64-openmp
+
+###TARGET=matlab-windows-w32
+###TARGET=matlab-windows-w32-openmp
+###TARGET=matlab-windows-w64
+###TARGET=matlab-windows-w64-openmp
+
+include mwrap.inc
+
+
+
+.f.$(OBJSUF):
+	$(MEX_FC) $(MEX_FLAGS) -c $(FFLAGS) $<
+
+.c.$(OBJSUF):
+	$(MEX_CC) $(MEX_FLAGS) -c $(CFLAGS) $<
+
+.SUFFIXES: .$(OBJSUF) .f .c
+
+
+# SOURCE FILE LIST
+#
+vpath %.f .:../src
+
+FSRCS = \
+     lfmm3dtria.f hfmm3dtria.f \
+     hfmm3dpart.f lfmm3dpart.f \
+     lfmm3drouts.f hfmm3drouts.f \
+     d3tstrcr.f d3mtreeplot.f \
+     h3dterms.f helmrouts3d.f h3dtrans.f \
+     l3dterms.f laprouts3d.f l3dtrans.f \
+     triahquad.f triagauc.f prini.f prinm.f \
+     yrecursion.f projections.f \
+     triasymq.f l3dtrirouts.f h3dtrirouts.f triquadflatlib.f trilib.f \
+     rotviarecur3.f rotproj.f dfft.f cdjseval3d.f legeexps.f 
+
+#
+# object files list
+OBJS    = $(FSRCS:.f=.$(OBJSUF)) 
+#
+
+all: $(OBJS) 
+	$(MW) $(MWFLAGS) $(MEX_GATEWAY) -mb $(PROJECT).mw
+	$(MW) $(MWFLAGS) $(MEX_GATEWAY) -c $(MEX_GATEWAY).c $(PROJECT).mw
+	$(MEX) -v $(MEX_FLAGS) $(MEX_LINK) $(MEX_GATEWAY).c $(OBJS) $(MEX_LIBS)
+
+doc:
+	$(MW) $(MWFLAGS) $(MEX_GATEWAY) -mb $(PROJECT).mw
+
+#
+clean: 
+	rm -f $(OBJS)
+# 
+list: $(FSRCS)
+	echo $^
+#
+distclean: 
+	rm -f $(OBJS) int2 fort.* *.o
+

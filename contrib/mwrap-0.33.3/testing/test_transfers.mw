@@ -1,0 +1,574 @@
+function test_transfers
+
+test_mult_inherit;
+test_scopes;
+test_literals;
+test_types;
+test_complex;
+test_nulls;
+test_method;
+test_returns;
+test_inputs;
+test_outputs;
+test_inouts;
+test_mx;
+test_const;
+test_struct;
+
+% ================================================================
+$[
+
+#include <stdio.h>
+#include <string.h>
+
+struct Pair {
+    Pair(double x, double y) { xy[0] = x; xy[1] = y; }
+    double xy[2];
+    double x() { return xy[0]; }
+    double y() { return xy[1]; }
+};
+
+struct BadPair {
+    double x;
+};
+
+struct DerivedPair : public Pair {
+    DerivedPair() : Pair(7,11) {}
+};
+
+#include <complex>
+typedef std::complex<double> cmplx;
+#define real_cmplx(z) (z).real()
+#define imag_cmplx(z) (z).imag()
+#define setz_cmplx(zp, r, i)  *zp = cmplx(r,i)
+
+$]
+% ================================================================
+function test_mult_inherit
+$[
+class Parent1 {
+public:
+    Parent1(int data) : data1_(data) {}
+    virtual ~Parent1() {}
+    virtual int data1() { return data1_; }
+protected:
+    int data1_;
+};
+
+class Parent2 {
+public:
+    Parent2(int data) : data2_(data) {}
+    virtual ~Parent2() {}
+    virtual int data2() { return data2_; }
+protected:
+    int data2_;
+};
+
+class Child : public Parent1, public Parent2 {
+public:
+    Child() : Parent1(1), Parent2(2) {}
+    virtual int data1() { return data1_ + 1; }
+    virtual int data2() { return data2_ + 1; }
+    int datas() { return data1_ + data2_; }
+};
+
+$]
+
+# class Child : Parent1, Parent2;
+# Child* c = new Child();
+# int d1 = c->Parent1.data1();
+# int d2 = c->Parent2.data2();
+# int dd = c->Child.datas();
+
+tassert(d1 == 2, 'Multiple inheritance handling (1)');
+tassert(d2 == 3, 'Multiple inheritance handling (2)');
+tassert(dd == 3, 'Multiple inheritance handling (3)');
+
+% ================================================================
+function test_scopes;
+
+$ class OuterClass {
+$ public:
+$   static int static_method() { return 123; }
+$ };
+# int x = OuterClass::static_method();
+
+tassert(x == 123, 'Access to static class method');
+
+% ================================================================
+function test_literals;
+
+$ int literal_plus1(int x) { return x+1; }
+# int y = literal_plus1(int 7);
+# int l = strlen(cstring 'Test');
+tassert(y == 8, 'Integer literals');
+tassert(l == 4, 'String literals');
+
+% ================================================================
+function test_types;
+
+$ typedef unsigned char byte;
+$ void takes_double(double& x) {}
+$ void takes_float(float& x) {}
+$ void takes_long(long& x) {}
+$ void takes_int(int& x) {}
+$ void takes_char(char& x) {}
+$ void takes_ulong(unsigned long& x) {}
+$ void takes_uint(unsigned int& x) {}
+$ void takes_uchar(unsigned char& x) {}
+$ void takes_bool(bool& x) {}
+$ void takes_size_t(size_t& x) {}
+
+x = 0;
+# typedef numeric byte;
+# takes_double(double& x);
+# takes_float(float& x);
+# takes_long(long& x);
+# takes_int(int& x);
+# takes_char(char& x);
+# takes_ulong(ulong& x);
+# takes_uint(uint& x);
+# takes_uchar(uchar& x);
+# takes_uchar(byte& x);
+# takes_bool(bool& x);
+# takes_size_t(size_t& x);
+
+# class DerivedPair : Pair;
+# DerivedPair* dp = new DerivedPair();
+# double x = dp->Pair.x();
+tassert(x == 7, 'Type casting');
+
+% ================================================================
+function test_complex;
+
+$ cmplx zsum(cmplx* zarray, int n) {
+$     cmplx sum(0);
+$     for (int i = 0; i < n; ++i) sum += zarray[i];
+$     return sum;
+$ }
+
+zarray = rand(10,1) + 1i*rand(10,1);
+n = length(zarray);
+# typedef dcomplex cmplx;
+# cmplx result = zsum(cmplx[] zarray, int n);
+tassert(abs(result-sum(zarray)) < 1e-10*norm(zarray), 'Complex support');
+
+
+% ================================================================
+function test_nulls;
+
+$ Pair* null_pair() { return NULL; }
+# Pair* p = null_pair();
+tassert(p == 0, 'Null pointer return');
+
+$ int is_null(Pair* p) { return !p; }
+# int flag = is_null(Pair* p);
+tassert(flag, 'Null pointer input');
+
+$ char* null_string() { return NULL; }
+# cstring s = null_string();
+tassert(s == 0, 'Null string return');
+
+# char* c = null_string();
+tassert(isempty(c), 'Null scalar pointer return');
+
+nil = [];
+$ int is_null(double* data) { return !data; }
+# int flag = is_null(double[] nil);
+tassert(flag, 'Null array input');
+
+# char[1] ca = null_string();
+tassert(isempty(ca), 'Null array return');
+
+$ void test_null_obj(Pair& p) { }
+try
+  # test_null_obj(Pair p);
+  tassert(0, 'Null argument dereference 1');
+end
+try
+  # test_null_obj(Pair& p);
+  tassert(0, 'Null argument dereference 1');
+end
+
+try
+  # double x = p->Pair.x();
+  tassert(0, 'Invalid this test');
+end
+
+# BadPair* bp = new BadPair();
+try
+  $ void test_bad_pair(Pair* p) { }
+  # test_bad_pair(Pair* bp);  
+  tassert(0, 'Invalid pointer test');
+end
+# delete(BadPair* bp);
+
+
+% ================================================================
+function test_method;
+
+x = 1;
+y = 2;
+# Pair* p = new Pair(double x, double y);
+# double xx = p->Pair.x();
+# double yy = p->Pair.y();
+# delete(Pair* p);
+tassert(xx == 1, 'Method call');
+tassert(yy == 2, 'Method call');
+
+
+% ================================================================
+function test_returns;
+
+$ Pair test_return_obj() { return Pair(1.5, 2.5); }
+# Pair p1 = test_return_obj();
+tassert(sscanf(p1, 'Pair:%x') > 0, 'Return object');
+
+$ double* test_return_array(Pair& p) { return p.xy; }
+# double[2] xy = test_return_array(Pair& p1);
+tassert(norm(xy-[1.5; 2.5]) == 0, 'Return array');
+
+$ double* test_return_array2(Pair& p) { return p.xy; }
+# double xy[2] = test_return_array2(Pair& p1);
+tassert(norm(xy-[1.5; 2.5]) == 0, 'Return array');
+
+$ double test_return_scalar(double* xy) { return xy[0] + xy[1]; }
+# double sum = test_return_scalar(double[] xy);
+tassert(sum == 4, 'Return scalar');
+
+xy_z = [1+5i, 7+11i];
+$ cmplx test_return_zscalar(cmplx* xy) { return xy[0] + xy[1]; }
+# cmplx sum1 = test_return_zscalar(cmplx[] xy);
+# cmplx sum2 = test_return_zscalar(cmplx[] xy_z);
+tassert(sum1 == 4,     'Return zscalar (reals)');
+tassert(sum2 == 8+16i, 'Return zscalar (complexes)');
+
+$ const char* test_return_string() { return "Hello, world!"; }
+# cstring s = test_return_string();
+tassert(strcmp(s, 'Hello, world!'), 'Return string');
+
+$ Pair* test_return_p_obj() { return new Pair(3, 5); }
+# Pair* p2 = test_return_p_obj();
+# double[2] xy = test_return_array(Pair& p2);
+tassert(norm(xy - [3;5]) == 0, 'Return obj*');
+
+a = 7; b = 11;
+$ int* test_return_p_scalar(int* a, int* b) { return (*a > *b) ? a : b; }
+# int* z1 = test_return_p_scalar(int* a, int* b);
+tassert(z1 == 11, 'Return scalar*');
+
+a_z = 7 + 10i; b_z = 11 + 15i;
+$ cmplx* test_return_p_zscalar(cmplx* a, cmplx* b) { 
+$     return (a->real() > b->real()) ? a : b; 
+$ }
+# cmplx* z1 = test_return_p_zscalar(cmplx* a, cmplx* b);
+# cmplx* z2 = test_return_p_zscalar(cmplx* a_z, cmplx* b_z);
+tassert(z1 == 11, 'Return zscalar*');
+tassert(z2 == 11 + 15i, 'Return zscalar*');
+
+$ Pair& test_return_r_obj(Pair& p) { return p; }
+# Pair& p2c = test_return_r_obj(Pair& p2);
+tassert(strcmp(p2, p2c), 'Return obj&');
+
+$ int& test_return_r_scalar(int& a, int& b) { return (a > b) ? a : b; }
+# int& z2 = test_return_r_scalar(int& a, int& b);
+tassert(z2 == 11, 'Return scalar&');
+
+$ cmplx& test_return_r_zscalar(cmplx& a, cmplx& b) { 
+$     return (a.real() > b.real()) ? a : b; 
+$ }
+# cmplx& z2 = test_return_r_zscalar(cmplx& a, cmplx& b);
+# cmplx& z3 = test_return_r_zscalar(cmplx& a_z, cmplx& b_z);
+tassert(z2 == 11, 'Return zscalar&');
+tassert(z3 == 11 + 15i, 'Return zscalar&');
+
+# delete(Pair* p1);
+# delete(Pair* p2);
+
+
+% ================================================================
+function test_inputs
+
+x = 101; y = 202;
+# Pair* p = new Pair(double x, double y);
+$ double test_input_obj(Pair p) { return p.xy[0] + p.xy[1]; }
+# double sum = test_input_obj(input Pair p);
+tassert(sum == 303, 'Input obj');
+
+xy = [11, 22];
+$ double test_input_array(double* xy) { return xy[0] + xy[1]; }
+# double sum = test_input_array(double[2] xy);
+tassert(sum == 33, 'Input array');
+
+$ double test_input_array2(double* xy) { return xy[0] + xy[1]; }
+# double sum = test_input_array2(double xy[2]);
+tassert(sum == 33, 'Input array');
+
+xy_z = [11 + 5i, 22 + 6i];
+$ cmplx test_input_zarray(cmplx* xy) { return xy[0] + xy[1]; }
+# cmplx sum = test_input_zarray(cmplx[2] xy);
+# cmplx sum2 = test_input_zarray(cmplx[2] xy_z);
+tassert(sum == 33, 'Input zarray');
+tassert(sum2 == 33 + 11i, 'Input zarray');
+
+$ int test_input_scalar(int x) { return x+1; }
+# int xp1 = test_input_scalar(int x);
+tassert(xp1 == 102, 'Input scalar');
+
+x_z = 101 + 99i;
+$ cmplx test_input_zscalar(cmplx x) { return x+1.0; }
+# cmplx xp1 = test_input_zscalar(cmplx x);
+# cmplx xp1z = test_input_zscalar(cmplx x_z);
+tassert(xp1 == 102, 'Input zscalar');
+tassert(xp1z == 102 + 99i, 'Input zscalar');
+
+msg = 'Hello, world!';
+$ int test_input_string(char* s) { return strlen(s); }
+# int msglen = test_input_string(cstring msg);
+tassert(msglen == length(msg), 'Input string');
+
+$ double test_input_p_obj(Pair* p) { return p->xy[0] + p->xy[1]; }
+# double sum2 = test_input_p_obj(Pair* p);
+tassert(sum2 == 303, 'Input obj*');
+
+$ int test_input_p_scalar(int* x) { return *x+1; }
+# int xp1b = test_input_p_scalar(int* x);
+tassert(xp1b == 102, 'Input scalar*');
+
+$ cmplx test_input_p_zscalar(cmplx* x) { return *x+1.0; }
+# cmplx xp1b = test_input_p_zscalar(cmplx* x);
+# cmplx xp1c = test_input_p_zscalar(cmplx* x_z);
+tassert(xp1b == 102, 'Input zscalar*');
+tassert(xp1c == 102 + 99i, 'Input zscalar*');
+
+$ double test_input_r_obj(Pair& p) { return p.xy[0] + p.xy[1]; }
+# double sum3 = test_input_r_obj(Pair& p);
+tassert(sum3 == 303, 'Input obj&');
+
+$ int test_input_r_scalar(int& x) { return x+1; }
+# int xp1c = test_input_r_scalar(input int& x);
+tassert(xp1c == 102, 'Input scalar&');
+
+$ cmplx test_input_r_zscalar(cmplx& x) { return x+1.0; }
+# cmplx xp1c = test_input_r_zscalar(input cmplx& x);
+# cmplx xp1d = test_input_r_zscalar(input cmplx& x_z);
+tassert(xp1c == 102, 'Input scalar&');
+tassert(xp1d == 102 + 99i, 'Input scalar&');
+
+# delete(input Pair* p);
+
+
+% ================================================================
+function test_outputs
+
+$ void test_output_array(double* xy) { xy[0] = 1; xy[1] = 2; }
+# test_output_array(output double[2] xy);
+tassert(norm(xy-[1;2]) == 0, 'Output array');
+
+$ void test_output_rarray(const double*& xy) { 
+$   static double result[2] = {7, 11};
+$   xy = result;
+$ }
+# test_output_rarray(output double[2]& xyr);
+tassert(norm(xyr-[7;11]) == 0, 'Output rarray');
+
+$ void test_output_rarray2(const double*& xy) { xy = NULL; }
+# test_output_rarray2(output double[2]& xyr2);
+tassert(isempty(xyr2), 'Output rarray');
+
+$ void test_output_zarray(cmplx* xy) { xy[0] = 1; xy[1] = 2; }
+$ void test_output_zarray2(cmplx* xy) { xy[0] = cmplx(1,3); xy[1] = 2; }
+# test_output_zarray(output cmplx[2] xy);
+# test_output_zarray2(output cmplx[2] xy_z);
+tassert(norm(xy-[1;2]) == 0, 'Output array');
+tassert(norm(xy_z-[1+3i;2]) == 0, 'Output array');
+
+fmt = '= %d'; i = 101;
+# sprintf(output cstring[128] buf, input cstring fmt, input int i);
+tassert(strcmp('= 101', buf), 'Output string');
+
+$ void test_output_p_scalar(int* i) { *i = 202; }
+# test_output_p_scalar(output int* i2);
+tassert(i2 == 202, 'Output scalar*');
+
+$ void test_output_p_zscalar(cmplx* z) { *z = cmplx(202,303); }
+# test_output_p_zscalar(output cmplx* z2);
+tassert(z2 == 202+303i, 'Output zscalar*');
+
+$ void test_output_r_scalar(int& i) { i = 303; }
+# test_output_r_scalar(output int& i3);
+tassert(i3 == 303, 'Output scalar&');
+
+$ void test_output_r_zscalar(cmplx& z) { z = cmplx(303,404); }
+# test_output_r_zscalar(output cmplx& z3);
+tassert(z3 == 303+404i, 'Output zscalar&');
+
+
+% ================================================================
+function test_inouts
+
+xy = [1, 2];
+$ void test_inout_array(double* xy) { xy[0] += 1; xy[1] += 1; }
+# test_inout_array(inout double[] xy);
+tassert(norm(xy - [2,3]) == 0, 'Inout array');
+
+s1 = 'foo'; 
+s2 = 'bar';
+# strcat(inout cstring[128] s1, input cstring s2);
+tassert(strcmp(s1, 'foobar'), 'Inout string');
+
+i1 = 101;
+$ void test_inout_p_scalar(int* i) { *i += 202; }
+# test_inout_p_scalar(inout int* i1);
+tassert(i1 == 303, 'Inout scalar*');
+
+i2 = 101;
+$ void test_inout_r_scalar(int& i) { i += 303; }
+# test_inout_r_scalar(inout int& i2);
+tassert(i2 == 404, 'Inout scalar&');
+
+
+% ================================================================
+function test_mx
+
+$ #include <mex.h>
+
+in1 = 42;
+$ double test_mx_input(const mxArray* x) { return *mxGetPr(x); }
+# double out1 = test_mx_input(input mxArray in1);
+tassert(out1 == 42, 'Input mx');
+
+$ void test_mx_output(mxArray** x)
+$ {
+$     *x = mxCreateString("foobar");
+$ }
+# test_mx_output(output mxArray out2);
+tassert(strcmp(out2, 'foobar'), 'Output mx');
+
+$ mxArray* test_mx_return() 
+$ { 
+$     mxArray* m = mxCreateDoubleMatrix(1,1, mxREAL);
+$     *mxGetPr(m) = 42;
+$     return m;
+$ }
+# mxArray out3 = test_mx_return();
+tassert(out3 == 42, 'Return mx');
+
+
+% ================================================================
+function test_const
+
+$ const int TEST_CONST = 42;
+$ int identity(int i) { return i; }
+# int result = identity(const TEST_CONST);
+tassert(result == 42, 'Constant transfer');
+# int result2 = identity(const 'TEST_CONST');
+tassert(result2 == 42, 'Constant transfer');
+
+% ================================================================
+function test_struct
+
+$[
+
+struct my_struct_t {
+    double x;
+    double y;
+};
+
+int my_struct_allocs = 0;
+
+int get_my_struct_allocs()
+{
+    return my_struct_allocs;
+}
+
+my_struct_t* mxWrapGet_my_struct_t(const mxArray* a, const char** e)
+{
+    // Note -- there really ought to be an error check here
+    ++my_struct_allocs;
+    my_struct_t* o = new my_struct_t;
+    o->x = mxGetPr(a)[0];
+    o->y = mxGetPr(a)[1];
+    return o;
+}
+
+mxArray* mxWrapSet_my_struct_t(my_struct_t* o)
+{
+    mxArray* a = mxCreateDoubleMatrix(2,1,mxREAL);
+    mxGetPr(a)[0] = o->x;
+    mxGetPr(a)[1] = o->y;
+    return a;
+}
+
+my_struct_t* mxWrapAlloc_my_struct_t()
+{
+    ++my_struct_allocs;
+    return new my_struct_t;
+}
+
+void mxWrapFree_my_struct_t(my_struct_t* o)
+{
+    --my_struct_allocs;
+    delete o;
+}
+
+void unpack_struct(my_struct_t& o, double* xy)
+{
+    xy[0] = o.x;
+    xy[1] = o.y;
+}
+
+void pack_struct(my_struct_t& o, double* xy)
+{
+    o.x = xy[0];
+    o.y = xy[1];
+}
+
+void swap_struct(my_struct_t& o)
+{
+    double tmp = o.x;
+    o.x = o.y;
+    o.y = tmp;
+}
+
+my_struct_t& rightmost(my_struct_t& p1, my_struct_t& p2)
+{
+    return (p1.x >= p2.x) ? p1 : p2;
+}
+
+my_struct_t* add1(my_struct_t& o)
+{
+    o.x += 1;
+    o.y += 1;
+    return &o;
+}
+
+$]
+
+# typedef mxArray my_struct_t;
+
+xy1 = [1, 2];
+# unpack_struct(my_struct_t& xy1, output double xy2[2]);
+tassert(norm(xy2-[1;2]) == 0, 'Structure conversion on input');
+
+# pack_struct(output my_struct_t xy3, double[] xy1);
+tassert(norm(xy3-[1;2]) == 0, 'Structure conversion on output');
+
+xy4 = [3; 4];
+# swap_struct(inout my_struct_t xy4);
+tassert(norm(xy4-[4; 3]) == 0, 'Structure on inout');
+
+# my_struct_t& result = rightmost(my_struct_t& xy1, my_struct_t& xy4);
+tassert(norm(result-[4;3]) == 0, 'Structure on reference return');
+
+# my_struct_t* xy5 = add1(my_struct_t& xy4);
+tassert(norm(xy5-[5;4]) == 0, 'Structure on pointer return');
+
+# int alloc_count = get_my_struct_allocs();
+tassert(alloc_count == 0, 'Balanced allocations in structure management');
+
+% ================================================================
+function tassert(pred, msg)
+
+if ~pred, fprintf('Failure: %s\n', msg); end
+

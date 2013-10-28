@@ -1,0 +1,78 @@
+% gzfile.mw
+%   MWrap wrapper to the ZLib compression library.
+%
+% Copyright (c) 2007  David Bindel
+% See the file COPYING for copying permissions
+
+$#include <zlib.h>
+
+
+// ----
+@function [gzf] = gzopen(path, mode)
+% [gzf] = gzopen(path, mode)
+%
+% Open a zlib output file.
+
+# void* gzf = gzopen(cstring path, cstring mode);
+
+
+// ----
+@function gzclose(gzf)
+% gzclose(gzf)
+%
+% Close a zlib output file.
+
+# gzclose(void* gzf);
+
+
+// ----
+@function [A] = gzread(gzf)
+% [A] = gzread(gzf)
+% 
+% Read a matrix from a zlib file.
+
+# int isize = sizeof(int 0);
+# int dsize = sizeof(double 0);
+nbytes = 2*isize;
+# gzread(void* gzf, output int[2] dims, int nbytes);
+m = dims(1); n = dims(2); nbytes = m*n*dsize;
+# gzread(void* gzf, output double[m,n] A, int nbytes);
+% gzwrite(gzf, A)
+%
+% Write a matrix to a zlib file.
+
+
+// ----
+@function gzwrite(gzf, A)
+% [A] = gzwrite(gzf, A)
+% 
+% Write a matrix from a zlib file.
+
+# int isize = sizeof(int 0);
+# int dsize = sizeof(double 0);
+nbytes = 2*isize;
+[m,n] = size(A);
+dims = [m,n];
+# gzwrite(void* gzf, int[2] dims, int nbytes);
+m = dims(1); n = dims(2); nbytes = m*n*dsize;
+# gzwrite(void* gzf, double[m,n] A, int nbytes);
+
+
+// ----
+@function gzsave(path, A)
+% gzsave(path, A)
+% 
+% Save a matrix to a zlib file.
+
+gzf = gzopen(path, 'w+');
+gzwrite(gzf, A)
+
+
+// ----
+@function [A] = gzload(path)
+% [A] = gzload(path)
+% 
+% Read a matrix from a zlib file.
+
+gzf = gzopen(path, 'r');
+A = gzread(gzf);

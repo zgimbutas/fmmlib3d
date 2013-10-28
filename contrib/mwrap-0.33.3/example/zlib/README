@@ -1,0 +1,3 @@
+This example illustrates bindings for the Zlib compression library
+(http://www.zlib.net/).  The test illustrates how these bindings can
+be used to read and write MATLAB matrices in compressed storage.

@@ -1,0 +1,20 @@
+
+function badmojo
+# double z = sumpair(inout Pair p);
+# double z = sumpair(output Pair p);
+# dble(inout int y);
+# dble(output int y);
+# strcat(inout cstring s1, cstring s2);
+# strcat(output cstring s1, cstring s2);
+# double z = sumpair(inout Pair& p);
+# double z = sumpair(inout Pair* p);
+# double z = sumpair(output Pair& p);
+# double z = sumpair(output Pair* p);
+# get34(output int[] z);
+# get34(output fcomplex[] z);
+# get34(output dcomplex[] z);
+# get(output int[1,2,3] z);
+# typedef bozo byte;
+%# An okay line -- should be ignored, since it doesn't start with #
+# // Another okay line -- comments should be ignored
+// Another okay line -- comments should be ignored

@@ -1,0 +1,97 @@
+
+Helmholtz particle FMMs in R^3.
+===============================
+
+hfmm3d: charge and dipstr are complex valued, x \in R^3
+
+\phi(x_i) = \sum_{j\ne i}   charge_j exp(k |x_i-x_j| )/|x_i-x_j|
+            + dipstr_j (dipvec_j \dot \grad_j exp(k |x_i-x_j| )/|x_i-x_j| )
+
+
+Laplace particle FMMs in R^3.
+=============================
+
+lfmm3d: charge and dipstr are complex valued, x \in R^3
+
+\phi(x_i) = \sum_{j\ne i}   charge_j  1/|x_i-x_j|
+            + dipstr_j (dipvec_j \dot \grad_j 1/|x_i-x_j| )
+
+
+Helmholtz triangle FMMs in R^3.
+===============================
+
+hfmm3d: charge and dipstr are complex valued, x \in R^3
+
+\phi(x_i) = \sum_{j} \int_{T_j}  charge_j exp(k |x_i-x_j| )/|x_i-x_j|
+            + dipstr_j (dipvec_j \dot \grad_j exp(k |x_i-x_j| )/|x_i-x_j| )
+
+
+Laplace triangle FMMs in R^3.
+=============================
+
+lfmm3d: charge and dipstr are complex valued, x \in R^3
+
+\phi(x_i) = \sum_{j} \int_{T_j}   charge_j  1/|x_i-x_j|
+            + dipstr_j (dipvec_j \dot \grad_j 1/|x_i-x_j| )
+
+
+==============================================================================
+
+hfmm3dpart.f  Helmholtz FMM for particles 
+                     (potential, field)
+
+lfmm3dpart.f  Laplace FMM for particles 
+                     (potential, field)
+
+hfmm3dtria.f  Helmholtz FMM for constant densities on flat triangles
+                     (potential, field)
+
+lfmm3dtria.f  Laplace FMM for constant densities on flat triangles
+                     (potential, field)
+
+d3tstrcr.f       FMM tree routines, for self and target interactions 
+d3mtreeplot.f    FMM tree plotting routines
+
+*_driver.f         driver files
+*.make         make files
+
+
+
+Flat triangulation (Cart3d) file format
+=======================================
+
+(adapted from
+http://people.nas.nasa.gov/aftosmis/cart3d/cart3dTriangulations.html)
+
+\begin{verbatim}
+nverts, ntri              <- total # of unique verts/tris, (int, int)
+x_1, y_1, z_1             <- Geometry of Vertex 1 (float, float, float)
+x_2, y_2, z_2             <- Geometry of Vertex 2 (float, float, float)
+x_3, y_3, z_3             <- ...
+.
+.
+.
+x_nverts, y_nverts, z_nverts <- geom of last unique vertex (nverts)
+v1_t1, v2_t1, v3_t1              <- Vertices of triangle 1 (int, int, int)
+v1_t2, v2_t2, v3_t2              <- Vertices of triangle 2 (int, int, int)
+v1_t3, v2_t3, v3_t3              <- Vertices of triangle 3 (int, int, int)
+.
+.
+.
+
+_____________
+Example of F77 code for reading a *.a.tri file
+read(iUnit,*) nverts, ntri
+read(iUnit,*) ( verts(1,j), verts(2,j), verts(3,j), j=1,nverts)
+read(iUnit,*) ( itrivert(1,j), itrivert(2,j), itrivert(3,j), j=1,ntri)
+
+Ordering of vertices:
+
+            3
+          .   . 
+         .     .
+        .       .
+       1 .. . .. 2
+
+with the normal vector computed assuming the path 1->2->3 is 
+positively oriented, following the right-hand rule.

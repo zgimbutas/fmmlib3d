@@ -1,0 +1,13 @@
+function test_catch
+
+$ void toss()
+$ {
+$     throw("Cookies");
+$ }
+
+try
+  # toss();
+  disp('Failed to properly catch exception');
+catch
+  fprintf('Correctly caught message: %s\n', lasterr);
+end

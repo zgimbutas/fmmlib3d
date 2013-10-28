@@ -1,0 +1,81 @@
+% assembler.mw
+%   MWrap bindings for MatrixAssembler (CSC matrix assembly).
+%
+% Copyright (c) 2007  David Bindel
+% See the file COPYING for copying permissions
+
+$[
+#include "assembler.h"
+#include <mex.h>
+#include <algorithm>
+
+mxArray* export_matrix(MatrixAssembler* matrix)
+{
+    matrix->compress();
+    int m = matrix->get_m();
+    int n = matrix->get_n();
+    int nnz = matrix->csc_nnz();
+    mxArray* result = mxCreateSparse(m, n, nnz, mxREAL);
+    std::copy(matrix->get_jc(), matrix->get_jc()+n+1, mxGetJc(result));
+    std::copy(matrix->get_ir(), matrix->get_ir()+nnz, mxGetIr(result));
+    std::copy(matrix->get_pr(), matrix->get_pr()+nnz, mxGetPr(result));
+    return result;
+}
+$]
+
+
+@function aobj = Assembler_create(m, n, nnz)
+% aobj = Assembler_create(m, n)
+%
+% Create an assembly object for m-by-n matrices.
+if nargin < 2, m = n; end
+if nargin < 3
+  # MatrixAssembler* aobj = new MatrixAssembler(int m, int n);
+else
+  # MatrixAssembler* aobj = new MatrixAssembler(int m, int n, int nnz);
+end 
+
+
+@function Assembler_delete(aobj)
+% Assembler_delete(aobj)
+%
+% Delete a matrix assembler object
+# delete(MatrixAssembler* aobj);
+
+
+@function Assembler_add(aobj, ii, jj, Aelt)
+% Assembler_create(aobj, ii, jj, Aelt)
+%
+% Perform A(ii,jj) += Aelt.
+[m,n] = size(Aelt);
+ii = ii-1;
+jj = jj-1;
+# aobj->MatrixAssembler.add_entry(int[m] ii, int[n] jj, double[m,n] Aelt, 
+#                                 int m, int n);
+
+
+@function K = Assembler_get(aobj)
+% K = Assembler_get(aobj)
+%
+% Retrieve a sparse matrix from a matrix assembler.
+# mxArray K = export_matrix(MatrixAssembler* aobj);
+
+
+@function Assembler_clear(aobj)
+% Assembler_clear(aobj)
+%
+% Clear the matrix assembler in preparation for building a new matrix.
+# aobj->MatrixAssembler.wipe();
+
+
+@function [structure_nnz, cached_nnz] = Assembler_stats(aobj)
+% [structure_nnz, cached_nnz] = Assembler_stats(aobj)
+%
+% Get statistics about the nonzeros in the assembler.
+# int structure_nnz = aobj->MatrixAssembler.csc_nnz();
+# int cached_nnz    = aobj->MatrixAssembler.cache_nnz();
+if nargout == 0
+  fprintf('NNZ in structure: %d\n', structure_nnz);
+  fprintf('NNZ in cache:     %d\n', cached_nnz);
+end
+

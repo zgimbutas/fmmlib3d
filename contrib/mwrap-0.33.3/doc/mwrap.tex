@@ -1,0 +1,778 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath}
+\usepackage{fancyheadings}
+
+\setlength{\oddsidemargin}{0.0in}
+\setlength{\textwidth}{6.5in}
+\setlength{\topmargin}{-0.5in}
+\setlength{\textheight}{9.0in}
+
+\bibliographystyle{unsrt}
+\renewcommand{\baselinestretch}{1.0}
+\newcommand{\mwrap}{\textsc{MWrap}}
+\newcommand{\gOR}{ $|$ }
+
+\title{\mwrap\ User Guide}
+\author{D. Bindel}
+
+\pagestyle{fancy}
+
+\headrulewidth 1.5pt
+\footrulewidth 1.5pt
+\chead{\mwrap}
+\lhead{}
+\rhead{}
+\cfoot{\thepage}
+\begin{document}
+
+\maketitle
+
+
+\section{Introduction}
+
+\mwrap\ is an interface generation system in the spirit of SWIG or
+matwrap.  From a set of augmented MATLAB script files, \mwrap\ will
+generate a MEX gateway to desired C/C++ function calls and MATLAB
+function files to access that gateway.  The details of converting to
+and from MATLAB's data structures, and of allocating and freeing
+temporary storage, are hidden from the user.
+
+\mwrap\ files look like MATLAB scripts with specially formatted
+extra lines that describe calls to C/C++.  For example, the following
+code is converted into a call to the C {\tt strncat} function:
+\begin{verbatim}
+$ #include <string.h>
+function foobar;
+
+  s1 = 'foo';
+  s2 = 'bar';
+  # strncat(inout cstring[128] s1, cstring s2, int 127);
+  fprintf('Should be foobar: %s\n', s1);
+\end{verbatim}
+There are two structured comments in this file.  The line
+beginning with \verb|$| tells \mwrap\ that this line is C/C++
+support code, and the line beginning with \verb|#| describes
+a call to the C {\tt strncat} function.  The call description
+includes information about the C type to be used for the input
+arguments, and also describes which parameters are used for input
+and for output.
+
+From this input file, \mwrap\ produces two output files: a C file
+which will be compiled with the MATLAB {\tt mex} script, and a MATLAB
+script which calls that MEX file.  If the above file is {\tt foobar.mw},
+for example, we would generate an interface file {\tt foobar.m} and a
+MEX script {\tt fbmex.mex} with the lines
+\begin{verbatim}
+  mwrap -mex fbmex -m foobar.m foobar.mw
+  mwrap -mex fbmex -c fbmex.c  foobar.mw
+  mex fbmex.c
+\end{verbatim}
+At this point, we can run the {\tt foobar} script from the MATLAB prompt:
+\begin{verbatim}
+  >> foobar
+  Should be foobar: foobar
+\end{verbatim}
+
+Versions of GNU Octave released after mid-2006 support much of
+MATLAB's MEX interface.  Simple {\mwrap}-generated code should work
+with GNU Octave.  To compile for GNU Octave, use \texttt{mkoctfile
+  --mex} instead of invoking \texttt{mex}.  GNU Octave does not
+implement MATLAB's object model, so code that uses MATLAB's
+object-oriented facilities will not function with GNU Octave.
+
+\section{\mwrap\ command line}
+
+The {\tt mwrap} command line has the following form:
+\begin{verbatim}
+  mwrap [-mex outputmex] [-m output.m] [-c outputmex.c] [-mb] 
+        [-list] [-catch] [-c99complex] [-cppcomplex] 
+        infile1 infile2 ...
+\end{verbatim}
+where
+\begin{itemize}
+
+\item {\tt -mex} specifies the name of the MEX function that the
+  generated MATLAB functions will call.  This name will generally be
+  the same as the prefix for the C/C++ output file name.
+
+\item {\tt -m} specifies the name of the MATLAB script to be
+  generated.
+
+\item {\tt -c} specifies the name of the C MEX file to be generated.
+  The MEX file may contain stubs corresponding to several different
+  generated MATLAB files.
+
+\item {\tt -mb} tells \mwrap\ to redirect MATLAB function output to
+  files named in the input.  In this mode, the processor will change
+  MATLAB function output files whenever it encounters a line
+  beginning with \verb|@|.  If \verb|@| occurs alone on a line,
+  MATLAB output will be turned off; if the line begins with \verb|@function|,
+  the line will be treated as the first line of a function, and the m-file
+  name will be deduced from the function name; and otherwise, the characters 
+  after \verb|@| (up to the next set of white space) will be treated as a
+  filename, and \mwrap\ will try to write to that file.
+
+\item {\tt -list} tells \mwrap\ to print to the standard output the
+  names of all files that would be generated from redirect output by
+  the {\tt -mb} flag.
+
+\item {\tt -catch} tells \mwrap\ to surround library calls in try/catch
+  blocks in order to intercept C++ exceptions.
+
+\item {\tt -c99complex} tells \mwrap\ to use the C99 complex floating
+  point types as the default {\tt dcomplex} and {\tt fcomplex} types.
+
+\item {\tt -cppcomplex} tells \mwrap\ to use the C++ complex floating
+  point types as the default {\tt dcomplex} and {\tt fcomplex} types.
+
+\end{itemize}
+
+
+\section{Interface syntax}
+
+
+\subsection{Input line types}
+
+\mwrap\ recognizes six types of lines, based on the first non-space
+characters at the start of the line:
+\begin{itemize}
+\item C support lines begin with \verb|$|.  These
+  lines are copied into the C code that makes up the MEX file.
+  Typically, such support lines are used to include any necessary
+  header files; they can also be used to embed short functions.
+
+\item Blocks of C support can be opened by the line \verb|$[|
+  and closed by the line \verb|$]|.  Like lines beginning with \verb|$|,
+  lines that fall between the opening and closing markers are copied into
+  the C code that makes up the MEX file.
+
+\item C call lines begin with \verb|#|.  These lines are
+  parsed in order to generate an interface function as part of the MEX
+  file and a MATLAB call line to invoke that interface function.  C
+  call lines can refer to variables declared in the local MATLAB
+  environment.
+
+\item Input redirection lines (include lines) begin with \verb|@include|.
+  The input file name should not be quoted in any way.
+
+\item Output redirection lines begin with \verb|@|. %
+  Output redirection is used to specify several generated MATLAB
+  scripts with a single input file.
+
+\item Comment lines begin with \verb|//|.  Comment lines are not included
+  in any output file.
+
+\item All other lines are treated as ordinary MATLAB code, and are
+  passed through to a MATLAB output file without further processing.
+
+\end{itemize}
+
+
+\subsection{C call syntax}
+
+The complete syntax for \mwrap\ call statements is given in
+Figure~\ref{mwrap-syntax-fig}.  Each statement makes a function or
+method call, and optionally assigns the output to a variable.  For
+each argument or return variable, we specify the type and also say
+whether the variable is being used for input, for output, or for both.
+Variables are given by names which should be valid identifiers in the
+local MATLAB environment where the call is to be made.  Input
+arguments can also be given numeric values, though it is still necessary
+to provide type information.
+
+There are three types of call specifications.  Ordinary functions
+not attached to a class can be called by name:
+\begin{verbatim}
+  # do_something();
+\end{verbatim}
+To create a new C++ object instance, we use the {\tt new} command
+\begin{verbatim}
+  # Thermometer* therm = new Thermometer(double temperature0);
+\end{verbatim}
+And once we have a handle to an object, we can invoke methods on it
+\begin{verbatim}
+  # double temperature = therm->Thermometer.get_temperature();
+\end{verbatim}
+Object deletion is handled just like an ordinary function call
+\begin{verbatim}
+  # delete(Thermometer* therm);
+\end{verbatim}
+Intrinsic operators like {\tt sizeof} can also be invoked in this manner.
+The type specifications are \emph{only} used to determine how \mwrap\
+should handle passing data between MATLAB and a C/C++ statement;
+the types specified in the call sequence should be compatible with 
+a corresponding C/C++ definition, but they need not be identical to the
+types in a specific function or method declaration.
+
+An \mwrap\ type specification consists of three parts.  The first
+(optional) part says whether the given variable will be used for input
+({\tt input}), for output ({\tt output}), or for both.  The second
+part gives the basic type name for the variable; this may be an
+intrinsic type like {\tt int} or {\tt double}, a string, an object
+type, or a MATLAB intrinsic (see Section~\ref{type-section}).
+Finally, there may be modifiers to specify that this is a pointer, a
+reference, or an array.  Array and string arguments may also have
+explicitly provided size information.  In the example from the
+introduction, for example the argument declaration
+\begin{verbatim}
+  inout cstring[128] s1
+\end{verbatim}
+tells \mwrap\ that {\tt s1} is a C string which is used for input and output,
+and that the buffer used should be at least 128 characters long.
+
+Identifiers in \mwrap\ may include C++ scope specifications to indicate
+that a function or method belongs to some namespace or that it is a static
+member of a class.  That is, it is valid to write something like
+\begin{verbatim}
+  std::ostream* os = foo->get_ostream();
+\end{verbatim}
+Scoped names may be used for types or for method names, but it is an
+unchecked error to use a scoped name for a parameter or return
+variable.
+
+\begin{figure}
+\begin{center}
+\begin{tabular}{l@{ := }l}
+  statement  & returnvar {\tt = } func {\tt (} args {\tt );} \\
+             & func {\tt (}  args {\tt );} \\
+             & {\tt typdef numeric} {\it type-id} {\tt ;} \\
+             & {\tt typdef dcomplex} {\it type-id} {\tt ;} \\
+             & {\tt typdef fcomplex} {\it type-id} {\tt ;} \\
+             & {\tt class} {\it child-id} {\tt :}
+               {\it parent-id} {\tt ,} {\it parent-id} {\tt ,} $\ldots$
+\vspace{5mm} \\
+  func       & {\it function-id} \\
+             & {\tt FORTRAN} {\it function-id} \\
+             & {\it this-id} {\tt .} {\it class-id} {\tt ->} {\it method-id}\\
+             & {\tt new} {\it class-id}
+\vspace{5mm} \\
+  args       & arg {\tt ,} arg {\tt ,} $\ldots$ \gOR\ $\epsilon$ \\
+  arg        & iospec type {\it var-id} \\
+             & ispec  type {\it value} \\
+  returnvar  & type {\it var-id} 
+\vspace{5mm} \\
+  iospec     & {\tt input} \gOR\ {\tt output} \gOR\ {\tt inout} \gOR\ 
+               $\epsilon$ \\
+  ispec      & {\tt input} \gOR\ $\epsilon$ \\
+  type       & {\it type-id} \gOR 
+               {\it type-id} {\tt *} \gOR\
+               {\it type-id} {\tt \&} \gOR\
+               {\it type-id} {\tt [} dims {\tt]} \gOR\
+               {\it type-id} {\tt [} dims {\tt] \&} \\
+  dims       & dim {\tt ,} dim {\tt ,} $\ldots$ \gOR\ $\epsilon$ \\
+  dim        & {\it var-id} \gOR\ {\it number}
+\end{tabular}
+\caption{\mwrap\ call syntax}
+\label{mwrap-syntax-fig}
+\end{center}
+\end{figure}
+
+
+\section{Variable types}
+\label{type-section}
+
+\mwrap\ recognizes several different general types of variables as well
+as constant expressions:
+
+
+\subsection{Numeric types}
+
+{\it Scalars} are intrinsic numeric types in C/C++:
+{\tt double}, {\tt float}, {\tt long}, {\tt int}, {\tt char},
+{\tt ulong}, {\tt uint}, {\tt uchar}, {\tt bool}, and {\tt size\_t}.
+These are the numeric types that \mwrap\ knows about by default, but
+if necessary, new numeric types can be declared using {\tt typedef}
+commands.  For example, if we wanted to use {\tt uint32\_t} as a
+numeric type, we would need the line
+\begin{verbatim}
+  # typedef numeric uint32_t;
+\end{verbatim}
+Ordinary scalars cannot be used as output arguments.
+
+{\it Scalar pointers} are pointers to the recognized numeric
+intrinsics.  They are assumed to refer to {\em one} variable; that
+is, a {\tt double*} in \mwrap\ is a pointer to one double in memory,
+which is different from a double array ({\tt double[]}).
+
+{\it Scalar references} are references to the recognized numeric
+intrinsics.
+
+{\it Arrays} store arrays of recognized numeric intrinsics.
+They may have explicitly specified dimensions (in the case of pure
+return arrays and pure output arguments, they \emph{must} have explicitly
+specified dimensions), but the dimensions can also be automatically
+determined from the input data.  If only one dimension is provided,
+return and output arrays are allocated as column vectors.
+
+If a function is declared to return an array or a scalar pointer
+and the C return value is NULL, \mwrap\ will pass an empty array
+back to MATLAB.  If an empty array is passed to a function as an
+input array argument, \mwrap\ will interpret that argument as NULL.
+
+{\it Array references} are references to numeric arrays, such
+as in a function whose C++ prototype looks like
+\begin{verbatim}
+  void output_array(const double*& data);
+\end{verbatim}
+Array references may only be used as output arguments, and the array
+must have explicitly specified dimensions.  If the value of the data
+pointer returned from the C++ function is NULL, \mwrap\ will pass an
+empty array back to MATLAB.
+
+{\it Complex} scalars pose a special challenge.  C++ and C99 provide
+distinct complex types, and some C89 libraries define complex numbers
+via structures.  If the {\tt -cppcomplex} or {\tt -c99complex} flags
+are specified, {\tt mwrap} will automatically define complex double
+and single precision types {\tt dcomplex} and {\tt fcomplex} which are
+bound to the C++ or C99 double-precision and single-precision complex
+types.  More generally, we allow complex numbers which are
+conceptually pairs of floats or doubles to be defined using {\tt
+  typedef fcomplex} and {\tt typedef dcomplex} commands.  For example,
+in C++, we might use the following commands to set up a double complex
+type {\tt cmplx} (which is equivalent to the {\tt dcomplex} type when
+the {\tt -cppcomplex} flag is used):
+\begin{verbatim}
+  $ #include <complex>
+  $ typedef std::complex<double> cmplx;   // Define a complex type
+  $ #define real_cmplx(z) (z).real()      // Accessors for real, imag
+  $ #define imag_cmplx(z) (z).imag()      //  (req'd for complex types)
+  $ #define setz_cmplx(z,r,i) *z = dcomplex(r,i)
+
+  # typedef dcomplex cmplx;
+\end{verbatim}
+The macro definitions {\tt real\_cmplx}, {\tt imag\_cmplx}, and {\tt
+setz\_cmplz} are used by \mwrap\ to read or write the real and imaginary parts
+of a number of type {\tt cmplx}.  Similar macro definitions must be provided
+for any other complex type to be used.
+
+Other than any setup required to define what will be used as a complex
+type, complex scalars can be used in all the same ways that real and
+integer scalars are used.
+
+
+\subsection{Strings}
+
+{\it Strings} are C-style null-terminated character strings.
+They are specified by the \mwrap\ type {\tt cstring}.  A {\tt cstring}
+type is not equivalent to a {\tt char[]} type, since the latter is
+treated as an array of numbers (represented by a double vector in MATLAB)
+in which zero is given no particular significance.
+
+The dimensions can be of a {\tt cstring} can explicitly specified or
+they can be implicit.  When a C string is used for output, the size
+of the corresponding character buffer \emph{must} be given; and when
+a C string is used for input, the size of the corresponding character
+buffer should not be given.
+
+If a function is declared to return a C string and the return value
+is NULL, \mwrap\ will pass back the scalar 0.
+
+
+\subsection{Objects}
+
+{\it Objects} are variables with any base type other than one of the
+recognized intrinsics (or the {\tt mxArray} pass-through -- see below).
+This can lead to somewhat startling results when, for example, 
+\mwrap\ decides a {\tt size\_t} is a dynamic object type (this will only
+give surprises if one tries to pass in a numeric value).  If a function
+or method returns an object, \mwrap\ will make a copy of the return object
+on the heap and pass back that copy.
+
+{\it Object references} are treated the same as objects, except
+that when a function returns an object reference, \mwrap\ will
+return the address associated with that reference, rather than
+making a new copy of the object.
+
+{\it Object pointers} may either point to a valid object of the
+appropriate type or to NULL (represented by zero).  This is
+different from the treatment of objects and object references.  When
+a NULL value is specified for a {\tt this} argument, an object
+argument, or an object reference argument, \mwrap\ will generate a
+MATLAB error message.
+
+If the wrapped code uses an object hierarchy, you can use \mwrap\ class
+declarations so that valid casts to parent types will be performed
+automatically.  For example, the declaration
+\begin{verbatim}
+  # class Child : Parent1, Parent2;
+\end{verbatim}
+tells \mwrap\ that an object of type {\tt Child} may be passed in where
+an object of type {\tt Parent1} is required.  The generated code works
+correctly with C++ multiple inheritance.
+
+Objects cannot be declared as output or inout parameters, but that just
+means that the identity of an object parameter does not change during a
+call.  There's nothing wrong with changing the internal state of the object.
+
+By default, \mwrap\ stores non-NULL object references in strings.
+However, for MATLAB 2008a and onward, \mwrap\ will also interpret as objects
+any classes with a readable property {\tt mwptr}.  This can be used, for
+example, to implement class wrappers using the new {\tt classdef} keyword.
+In order to use this feature, the macro {\tt R2008OO} must be defined
+by adding the argument {\tt -DR2008OO} to the {\tt mex} compile line.
+
+
+\subsection{{\tt mxArray}}
+
+The {\it mxArray} type in \mwrap\ refers to MATLAB's basic
+object type (also called {\tt mxArray}).  {\tt mxArray} arguments
+can be used as input or output arguments (but not as inout arguments),
+or as return values.  On input, {\tt mxArray} is mapped to C type
+{\tt const mxArray*}; on output, it is mapped to {\tt mxArray**}; and
+on return, it is mapped to {\tt mxArray*}.  For example, the line
+\begin{verbatim}
+  # mxArray do_something(mxArray in_arg, output mxArray out_arg);
+\end{verbatim}
+is compatible with a function defined as
+\begin{verbatim}
+  mxArray* do_something(const mxArray* in_arg, mxArray** out_arg);
+\end{verbatim}
+Note that the header file {\tt mex.h} must be included for this
+function declaration to make any sense.
+
+The primary purpose for the mxArray pass through is to allow
+specialized routines to read the internal storage of MATLAB sparse
+matrices (and possibly other structures) for a few routines without
+giving up the convenience of the \mwrap\ framework elsewhere.
+
+
+\subsection{Auto-converted objects}
+
+If there is a natural mapping from some MATLAB data structure to
+a C/C++ object type, you can use a typedef to tell \mwrap\ to perform
+automatic conversion.  For example, if we wanted {\tt Foo} to be
+automatically converted from some MATLAB data structure on input, then
+we would add the line
+\begin{verbatim}
+  # typedef mxArray Foo;
+\end{verbatim}
+With this declaration, {\tt Foo} objects are automatically converted
+from {\tt mxArray} to the corresponding C++ type on input, and back to
+{\tt mxArray} objects on output.  It is assumed that \mwrap\ {\em owns
+the argument objects} and {\em does not own the return objects}.
+This feature should not be used when the C++ side keeps a pointer or
+reference to a passed object, or when the caller is responsible for deleting
+a dynamically allocated return object.
+
+Auto-converted objects rely on the following user-defined functions:
+\begin{verbatim}
+  Foo* mxWrapGet_Foo(const mxArray* a, const char** e);
+  mxArray* mxWrapSet_Foo(Foo* o);
+  Foo* mxWrapAlloc_Foo();
+  void mxWrapFree_Foo(Foo* o);
+\end{verbatim}
+Not all functions are needed for all uses of an auto-converted type.
+The functions play the following roles:
+\begin{enumerate}
+\item
+  The \verb|mxWrapGet_Foo| function is used to convert an input argument
+  to the corresponding C++ representation.  If an error occurs during
+  conversion, the second argument should be pointed toward an error message
+  string.  It is assumed that this conversion function will catch any thrown
+  exceptions.
+\item
+  The \verb|mxWrapSet_Foo| function is used to convert an output argument
+  or return value to the corresponding C++ representation.
+\item
+  The \verb|mxWrapAlloc_Foo| function is used to allocate a new temporary
+  for use as an output argument.
+\item
+  The \verb|mxWrapFree_Foo| function is used to deallocate a temporary
+  created by \verb|mxWrapGet_Foo| or \verb|mxWrapAlloc_Foo|.
+\end{enumerate}
+
+The point of auto-converted objects is to simplify wrapper design for
+codes that make heavy use of things like C++ vector classes (for example).
+The system does {\em not} provide the same flexibility as the {\tt mxArray}
+object, nor is it as flexible as a sequence of \mwrap\ calls to explicitly
+create and manage temporaries and their conversion to and from MATLAB objects.
+
+At present, the behavior when you try to involve an auto-converted object
+in an inheritance relation is undefined.  Don't try it at home.
+
+
+\subsection{Constants}
+
+The {\it const} type in \mwrap\ refers to a C/C++ symbolic constant or
+global variable.  The name of the variable is output directly into the
+compiled code.  For example, to print a string to {\tt stderr}, we can
+write
+\begin{verbatim}
+  # fprintf(const stderr, cstring s);
+\end{verbatim}
+
+
+\section{Example}
+
+An event queue stores pairs $(i, t)$ pairs, $i$ is an identifier for
+some event and $t$ is a time associated with the event.  Events can be
+added to the queue in whatever order, but they are removed in
+increasing order by time.  In this example, we bind to a C++ event
+queue implementation based on the C++ standard template library
+priority queue.  The example code is in {\tt
+  example/eventq/eventq\_class.mw} and {\tt
+  example/eventq/eventq\_handle.mw}; an alternate version of the code
+in {\tt example/eventq/eventq\_plain.mw} illustrates a different way
+of organizing the same interface.  The {\tt example/eventq2}
+subdirectory provides yet another implementation, this one capable of
+storing arbitrary MATLAB arrays rather than just integers.
+
+\subsection{Event queue using old MATLAB OO}
+
+We begin by defining an event as a pair (double, int), and an
+event queue as an STL priority queue of such pairs, sorted in
+descending order:
+\begin{verbatim}
+$ #include <queue>
+$
+$ typedef std::pair<double, int>                      Event;
+$ typedef std::priority_queue< Event,
+$                              std::vector<Event>,
+$                              std::greater<Event> >  EventQueue;
+\end{verbatim}
+
+Now we specify the code to wrap the individual methods.  For this
+example, we will take advantage of the object oriented features in
+MATLAB, and map the methods of the C++ event queue class onto methods
+of a MATLAB wrapper class called {\tt eventq}.  We begin with bindings
+for the constructor and destructor.  We will compile the MATLAB
+functions for the interface using the {\tt -mb} flag, so that we can
+specify these functions (and all the others) in the same file:
+\begin{verbatim}
+@ @eventq/eventq.m -------------------------------------
+
+function [qobj] = eventq();
+
+qobj = [];
+# EventQueue* q = new EventQueue();
+qobj.q = q;
+qobj = class(qobj, 'eventq');
+
+
+@ @eventq/destroy.m -------------------------------------
+
+function destroy(qobj);
+
+q = qobj.q;
+# delete(EventQueue* q);
+\end{verbatim}
+
+The {\tt empty} method returns a {\tt bool}, but \mwrap\ does not
+know about {\tt bool} variables.  A {\tt bool} result can be saved
+as an integer, though, so we will simply do that:
+\begin{verbatim}
+@ @eventq/empty.m -------------------------------------
+
+function [e] = empty(qobj)
+
+q = qobj.q;
+# int e = q->EventQueue.empty();
+\end{verbatim}
+
+Because {\tt pop\_event} needs to return two values (the event identifier
+and the time), we use reference arguments to pass out the information.
+\begin{verbatim}
+@ @eventq/pop_event.m -------------------------------------
+
+function [id, t] = pop_event(qobj)
+
+$ void pop_event(EventQueue* q, int& id, double& t) {
+$     t  = q->top().first;
+$     id = q->top().second;
+$     q->pop();
+$ }
+$
+q = qobj.q;
+# pop_event(EventQueue* q, output int& id, output double& t);
+\end{verbatim}
+
+In MATLAB, it may make sense to simultaneously push several events.
+However, our event queue class only provides basic interfaces to
+push one event at a time.  We could write a MATLAB loop to add events
+to the queue one at a time, but for illustrating how to use \mwrap,
+it is better to write the loop in C:
+\begin{verbatim}
+@ @eventq/push_event.m -------------------------------------
+
+function push_event(qobj, id, t)
+
+$ void push_events(EventQueue* q, int* id, double* t, int m)
+$ {
+$     for (int i = 0; i < m; ++i)
+$         q->push(Event(t[i], id[i]));
+$ }
+$
+q = qobj.q;
+m = length(id);
+# push_events(EventQueue* q, int[m] id, double[m] t, int m);
+\end{verbatim}
+
+\subsection{Event queue using new MATLAB OO}
+
+Starting with MATLAB 7.6 (release 2008A), MATLAB supports a new single-file
+OO programming style.  Particularly convenient for writing wrappers is the
+{\em handle} class system, which allows the user to define destructors that
+are called automatically when an instance is destroyed by the system (because
+all references to the instance have gone out of scope).  As a programming
+convenience, \mwrap\ automatically interprets a class with the property
+{\tt mwptr} as a container for an \mwrap\ object\footnote{This functionality
+  is only enabled when {\tt -DR2008OO} is specified as an argument on the
+  MEX command line.  This restriction is in place so that the files generated
+  by \mwrap\ can remain compatible with Octave and with older versions
+  of MATLAB.}.  
+For example, the following file provides an alternate implementation
+of the event queue class described in the previous section.
+
+\begin{verbatim}
+$ #include <queue>
+$
+$ typedef std::pair<double, int>                      Event;
+$ typedef std::priority_queue< Event,
+$                              std::vector<Event>,
+$                              std::greater<Event> >  EventQueue;
+
+@ eventqh.m ----------------------------------------------
+
+classdef eventqh < handle
+
+  properties
+    mwptr
+  end
+
+  methods
+
+    function [qobj] = eventqh(obj)
+      # EventQueue* q = new EventQueue();
+      qobj.mwptr = q;
+    end
+
+    function delete(q)
+      #delete(EventQueue* q);
+    end
+
+    function e = empty(q)
+      # int e = q->EventQueue.empty();
+    end
+
+    function [id, t] = pop(q)
+      $ void pop_event(EventQueue* q, int& id, double& t) {
+      $     t  = q->top().first;
+      $     id = q->top().second;
+      $     q->pop();
+      $ }
+      # pop_event(EventQueue* q, output int& id, output double& t);
+    end
+
+    function push(q, id, t)
+      $ void push_events(EventQueue* q, int* id, double* t, int m)
+      $ {
+      $     for (int i = 0; i < m; ++i)
+      $         q->push(Event(t[i], id[i]));
+      $ }
+      m = length(id);
+      # push_events(EventQueue* q, int[m] id, double[m] t, int m);
+    end
+
+  end
+end
+\end{verbatim}
+
+This implementation of the event queue class allows for automatic cleanup:
+\begin{verbatim}
+  q = eventqh();   % Construct a new queue
+  clear q;         % The C++ object gets correctly deleted here
+\end{verbatim}
+
+{\bf Warning}: When using MATLAB handle classes for automatic cleanup,
+be sure to avoid situations where multiple MATLAB handle objects have
+been given responsible for deleting a single C/C++ object.  If you need
+to have more than one MATLAB handle for a single C/C++ object,
+I recommend using a reference counted pointer class as an 
+intermediate\footnote{
+  For more information on reference counted pointer classes, I recommend
+  reading {\em More Effective C++} by Scott Meyers.
+}.
+
+
+\section{FORTRAN bindings}
+
+It is possible to use \mwrap\ to bind FORTRAN functions (though the
+generated MEX file is still a C/C++ file).  FORTRAN bindings can be
+specified using the {\tt FORTRAN} keyword immediately before a function
+name; for example:
+\begin{verbatim}
+  # double sum = FORTRAN dasum(int n, double[n] x, int 1);
+\end{verbatim}
+
+FORTRAN parameters are treated differently from C parameters in the
+following ways:
+\begin{enumerate}
+\item
+  \mwrap\ does not allow objects to be passed into FORTRAN functions.
+\item
+  Scalar and reference arguments are automatically converted to pointer
+  arguments from the C side to match FORTRAN call-by-reference semantics.
+\item
+  A warning is generated when passing C strings into FORTRAN.  The generated
+  code will work with compilers that produce f2c-compatible code (including
+  g77/g95), but it will not work with all FORTRAN compilers.
+\item
+  Only simple numeric values can be returned from FORTRAN.  A warning is
+  generated when returning complex values, as different FORTRAN compilers
+  follow different protocols when returning complex numbers.  The generated
+  code for complex return types will work with some f2c-compatible compilers, 
+  but by no means all.
+\end{enumerate}
+
+Internally, \mwrap\ defines macros for different FORTRAN name-mangling
+conventions, and it declares appropriate prototypes (and protects them
+from C++ compiler name mangling).  By default, \mwrap\ assumes that
+the f2c name mangling convention is being used (this convention is
+followed by Sun FORTRAN, g77, and g95); however, the following flags
+can be passed to the {\tt mex} script to change this behavior:
+\begin{itemize}
+\item
+  {\tt -DMWF77\_CAPS} -- Assume the FORTRAN compiler uses all-caps
+  names and no extra underscores.  Used by Compaq FORTRAN (I think).
+\item
+  {\tt -DMWF77\_UNDERSCORE1} -- Append a single underscore to an
+  all-lower-case name.  Used by the Intel FORTRAN compiler.
+\end{itemize}
+
+It is possible to use the {\tt typedef numeric} construct to introduce
+new types corresponding to FORTRAN data types.  For example, if the
+header file {\tt f2c.h} is available (and the types defined therein are
+appropriate for the compiler) we might have
+\begin{verbatim}
+% Use the f2c integer type...
+
+$ #include "f2c.h"
+# typedef numeric integer;
+# double sum = FORTRAN dasum(integer n, double[n] x, integer 1);
+\end{verbatim}
+No attempt is made to automatically produce these type maps, though.
+
+
+\section{Logging}
+
+For profiling and coverage testing, it is sometimes useful to track the
+number of calls that are made through \mwrap.  If {\tt mymex} is the name
+of the generated MEX file, then we can access profile information as
+follows:
+\begin{verbatim}
+  % Enable profiler
+  mymex('*profile on*');
+
+  % Run some tests here...
+
+  % Print to screen and to a log file
+  mymex('*profile report*');
+  mymex('*profile log*', 'log.txt');
+
+  % Disable profiler
+  mymex('*profile off*');
+\end{verbatim}
+
+The MEX file will be locked in memory as long as profiling is active.
+
+\end{document}

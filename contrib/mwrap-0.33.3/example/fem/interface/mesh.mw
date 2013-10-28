@@ -1,0 +1,376 @@
+% mesh.mw
+%   MWrap bindings for Mesh.
+%
+% Copyright (c) 2007  David Bindel
+% See the file COPYING for copying permissions
+
+$ #include "mesh.h"
+
+
+// ----
+@function mobj = Mesh_create(ndm, maxndf, maxnen)
+% mobj = Mesh_create(ndm, maxndf, maxnen)
+%
+% Create a new mesh object.
+%   ndm    - Number of spatial dimensions
+%   maxndf - Maximum number of dofs per node
+%   maxnen - Maximum number of elements per node
+# Mesh* mobj = new Mesh(int ndm, int maxndf, int maxnen);
+
+
+// ----
+@function Mesh_delete(mobj)
+% Mesh_delete(mobj)
+%
+% Delete an existing mesh object.
+# delete(Mesh* mobj);
+
+
+// ----
+@function ndm = Mesh_ndm(mobj)
+% ndm = Mesh_ndm(mobj)
+%
+% Get the number of spatial dimensions for the mesh
+# int ndm = mobj->Mesh.ndm();
+
+
+// ----
+@function maxndf = Mesh_maxndf(mobj)
+% maxndf = Mesh_maxndf(mobj)
+%
+% Get the maximum number of nodal dofs for the mesh
+# int maxndf = mobj->Mesh.maxndf();
+
+
+// ----
+@function maxnen = Mesh_maxnen(mobj)
+% maxnen = Mesh_maxnen(mobj)
+%
+% Get the maximum number of nodes per element for the mesh
+# int maxnen = mobj->Mesh.maxnen();
+
+
+// ----
+@function numelt = Mesh_numelt(mobj)
+% numelt = Mesh_numelt(mobj)
+%
+% Get the number of elements in the mesh.
+# int numelt = mobj->Mesh.numelt();
+
+
+// ----
+@function numnp = Mesh_numnp(mobj)
+% numnp = Mesh_numnp(mobj)
+%
+% Get the number of nodes in the mesh
+# int numnp = mobj->Mesh.numnp();
+
+
+// ----
+@function numid = Mesh_numid(mobj)
+% numid = Mesh_numid(mobj)
+%
+% Get the number of active dofs in the mesh
+# int numid = mobj->Mesh.numid();
+
+
+// ----
+@function x = Mesh_x(mobj, i)
+% Mesh_x(mobj, i)
+%
+% Get the coordinates of mesh node i.  If the node number is omitted,
+% get the coordinates for all nodes in the mesh.
+
+if nargin == 2
+  i = i-1;
+  # int ndm = mobj->Mesh.ndm();
+  # double[ndm] x = mobj->Mesh.x(int i);
+else
+  # int numnp = mobj->Mesh.numnp();
+  # int ndm   = mobj->Mesh.ndm();
+  # double[ndm,numnp] x = mobj->Mesh.x();
+end
+
+
+// ----
+@function ix = Mesh_ix(mobj, i)
+% Mesh_ix(mobj, i)
+%
+% Get the connectivity of element i.  If the element number is omitted,
+% get the connectivity for all elements in the mesh.
+
+if nargin == 2
+  i = i-1;
+  # int maxnen = mobj->Mesh.maxndf();
+  # int[maxnen] ix = mobj->Mesh.ix(int i);
+else
+  # int numelt = mobj->Mesh.numelt();
+  # int maxnen = mobj->Mesh.maxnen();
+  # int[maxnen,numelt] ix = mobj->Mesh.ix();
+end
+ix = ix+1;
+
+
+// ----
+@function id = Mesh_id(mobj, i)
+% Mesh_id(mobj, i)
+%
+% Get the degrees of freedom for element i.  If the element number is omitted,
+% get the degrees of freedom for all elements in the mesh.
+
+if nargin == 2
+  i = i - 1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # int[maxndf] id = mobj->Mesh.id(int i);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # int[maxndf,numnp] id = mobj->Mesh.id();
+end
+id = id + 1;
+
+
+// ----
+@function u = Mesh_u(mobj, i)
+% Mesh_u(mobj, i)
+%
+% Get the displacement of mesh node i.  If the node number is omitted,
+% get the displacements for all nodes in the mesh.
+
+if nargin == 2
+  i = i-1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # double[maxndf] u = mobj->Mesh.u(int i);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # double[maxndf,numnp] u = mobj->Mesh.u();
+end
+
+
+// ----
+@function f = Mesh_f(mobj, i)
+% Mesh_f(mobj, i)
+%
+% Get the forces for mesh node i.  If the node number is omitted,
+% get the forces for all nodes in the mesh.
+
+if nargin == 2
+  i = i-1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # double[maxndf] f = mobj->Mesh.f(int i);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # double[maxndf,numnp] f = mobj->Mesh.f();
+end
+
+
+// ----
+@function bc = Mesh_bc(mobj, i)
+% Mesh_bc(mobj, i)
+%
+% Get the boundary codes of mesh node i.  If the node number is omitted,
+% get the boundary codes for all nodes in the mesh.
+
+if nargin == 2
+  i = i-1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # char[maxndf] bc = mobj->Mesh.bc(int i);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # char[maxndf,numnp] bc = mobj->Mesh.bc();
+end
+
+
+// ----
+@function bv = Mesh_bv(mobj, i)
+% Mesh_bv(mobj, i)
+%
+% Get the boundary values of mesh node i.  If the node number is omitted,
+% get the boundary values for all nodes in the mesh.
+
+if nargin == 2
+  i = i-1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # double[maxndf] bv = mobj->Mesh.bv(int i);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # double[maxndf,numnp] bv = mobj->Mesh.bv();
+end
+
+
+// ----
+@function Mesh_set_ur(mobj, ur)
+% Mesh_set_ur(mobj, ur)
+%
+% Set reduced displacement vector
+
+numid = Mesh_numid(mobj);
+# mobj->Mesh.set_ur(input double[numid] ur);
+
+
+// ----
+@function ur = Mesh_get_ur(mobj)
+% ur = Mesh_get_ur(mobj)
+%
+% Get reduced displacement vector
+
+numid = Mesh_numid(mobj);
+# mobj->Mesh.get_ur(output double[numid] ur);
+
+
+// ----
+@function Mesh_set_bc(mobj, bc, i, j)
+% Mesh_set_bc(mobj, bc, i, j)
+%
+% Set the boundary codes of mesh node i.  If the node number is omitted,
+% set the boundary codes for all nodes in the mesh.
+$[
+void set_bc(Mesh* mesh, char bc, int i, int j)
+{
+    mesh->bc(i,j) = bc;
+}
+
+void set_bc(Mesh* mesh, char* bc)
+{
+    int numnp  = mesh->numnp();
+    int maxndf = mesh->maxndf();
+    for (int j = 0; j < numnp; ++j)
+        for (int i = 0; i < maxndf; ++i)
+            mesh->bc(i,j) = bc[i+j*maxndf];
+}
+$]
+if nargin == 4
+  i = i-1;
+  j = j-1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # set_bc(Mesh* mobj, char bc, int i, int j);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # set_bc(Mesh* mobj, char[maxndf,numnp] bc);
+end
+
+
+// ----
+@function Mesh_set_bv(mobj, bv, i, j)
+% Mesh_set_bv(mobj, bv, i, j)
+%
+% Set the boundary codes of mesh node i.  If the node number is omitted,
+% set the boundary codes for all nodes in the mesh.
+$[
+void set_bv(Mesh* mesh, double bv, int i, int j)
+{
+    mesh->bv(i,j) = bv;
+}
+
+void set_bv(Mesh* mesh, double* bv)
+{
+    int numnp  = mesh->numnp();
+    int maxndf = mesh->maxndf();
+    for (int j = 0; j < numnp; ++j)
+        for (int i = 0; i < maxndf; ++i)
+            mesh->bv(i,j) = bv[i+j*maxndf];
+}
+$]
+if nargin == 4
+  i = i-1;
+  j = j-1;
+  # int maxndf = mobj->Mesh.maxndf();
+  # set_bv(Mesh* mobj, double bv, int i, int j);
+else
+  # int numnp  = mobj->Mesh.numnp();
+  # int maxndf = mobj->Mesh.maxndf();
+  # set_bv(Mesh* mobj, double[maxndf,numnp] bv);
+end
+
+
+// ----
+@function numid = Mesh_initialize(mobj)
+% numid = Mesh_initialize(mobj)
+%
+% Initialize the mesh object after completion of X/IX arrays.
+# int numid = mobj->Mesh.initialize();
+
+
+// ----
+@function numid = Mesh_assign_ids(mobj)
+% numid = Mesh_assign_ids(mobj)
+%
+% Assign identifiers to active degrees of freedom in the mesh.
+# int numid = mobj->Mesh.assign_ids();
+
+
+// ----
+@function F = Mesh_assemble_F(mobj)
+% F = Mesh_assemble_F(mobj)
+%
+% Assemble system residual force vector.
+
+numid = Mesh_numid(mobj);
+# mobj->Mesh.assemble_F();
+# mobj->Mesh.get_fr(output double[numid] F);
+
+
+// ----
+@function K = Mesh_assemble_K(mobj)
+% K = Mesh_assemble_K(mobj)
+%
+% Assemble system stiffness matrix.
+
+numid = Mesh_numid(mobj);
+Ka = Assembler_create(numid, numid);
+# mobj->Mesh.assemble_K(MatrixAssembler* Ka);
+K = Assembler_get(Ka);
+Assembler_delete(Ka);
+
+
+// ----
+@function id = Mesh_add_node(mobj, x)
+% id = Mesh_add_node(mobj, x)
+%
+% Build a new node at position x and return the index.
+
+# int ndm = mobj->Mesh.ndm();
+# int id  = mobj->Mesh.add_node(double[ndm] x);
+id = id + 1;
+
+
+// ----
+@function id = Mesh_add_element(mobj, etype, nodes)
+% id = Mesh_add_element(mobj, etype, nodes)
+%
+% Build a new element of type etype connected to the indicated nodes,
+% and return the index.
+
+numnp = length(nodes);
+nodes = nodes-1;
+# int id = mobj->Mesh.add_element(EType* etype, int[numnp] nodes, int numnp);
+id = id + 1;
+
+
+// ----
+@function Mesh_load(mobj, etype, x, ix)
+% Mesh_load(mobj, material, x, ix)
+%
+% Add a new batch of elements
+%   material - Material type
+%   x        - Coordinates of nodes in new elements
+%   ix       - Connectivity array for new elements
+
+# int ndm = mobj->Mesh.ndm();
+ids = zeros(1,size(x,2));
+for j = 1:size(x,2)
+  xj = x(:,j);
+  # int id  = mobj->Mesh.add_node(double[ndm] xj);
+  ids(j) = id;
+end
+
+numnp = size(ix,1);
+for j = 1:size(ix,2)
+  ixj = ids(ix(:,j));
+  # int id = mobj->Mesh.add_element(EType* etype, int[numnp] ixj, int numnp);
+end

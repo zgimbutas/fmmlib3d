@@ -1,0 +1,15 @@
+function test_fortran1
+
+$ #ifdef __cplusplus
+$ extern "C"
+$ #endif
+$ int foo_(int* a, int* b, int* c)
+$ {
+$     *a = *b + *c;
+$ }
+
+# FORTRAN foo(output int* a, int 1, int 2);
+tassert(a == 3, 'FORTRAN bindings');
+
+function tassert(pred, msg)
+if ~pred, fprintf('Failure: %s\n', msg); end

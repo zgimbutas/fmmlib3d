@@ -1,0 +1,11 @@
+This example illustrates several features of MWrap:
+
+ - The binding to the finite element assembly class uses mxArrays directly
+   (for sparse matrices).
+ - The binding to element types uses inheritance.
+ - The bindings to the mesh methods illustrate using zero-based to
+   one-based construction.
+
+The finite element source files are in src; the MWrap input files are in
+interface.  The MEX file and generated .m files build into the mwfem
+subdirectory.

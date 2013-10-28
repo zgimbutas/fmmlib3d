@@ -1,0 +1,47 @@
+% eventq_plain.mw
+%   Simple event queue for use in MATLAB event-driven simulations.
+%
+% Copyright (c) 2007  David Bindel
+% See the file COPYING for copying permissions
+
+$[
+#include <queue>
+
+typedef std::pair<double, int>                      Event;
+typedef std::priority_queue< Event, 
+                             std::vector<Event>, 
+                             std::greater<Event> >  EventQueue;
+$]
+
+
+@function [q] = EventQ_new();
+# EventQueue* q = new EventQueue();
+
+
+@function EventQ_destroy(q);
+# delete(EventQueue* q);
+
+
+@function [e] = EventQ_empty(q)
+# int e = q->EventQueue.empty();
+
+
+@function [id, t] = EventQ_pop(q)
+$ void pop_event(EventQueue* q, int& id, double& t) {
+$     t  = q->top().first;
+$     id = q->top().second;
+$     q->pop();
+$ }
+$
+# pop_event(EventQueue* q, output int& id, output double& t);
+
+
+@function EventQ_push(q, id, t)
+$ void push_events(EventQueue* q, int* id, double* t, int m)
+$ {
+$     for (int i = 0; i < m; ++i)
+$         q->push(Event(t[i], id[i]));
+$ }
+$
+m = length(id);
+# push_events(EventQueue* q, int[m] id, double[m] t, int m);

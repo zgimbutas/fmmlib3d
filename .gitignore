@@ -1,3 +1,6 @@
 *.o
 *.int
 fort.*
+*~
+octave-core
+int2

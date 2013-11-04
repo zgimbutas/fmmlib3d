@@ -266,37 +266,16 @@ c
       t1=second()
 C$        t1=omp_get_wtime()
 c
+      ms = m
+      mt = 0
       nqtri = 6
-C$OMP PARALLEL DO DEFAULT(SHARED)
-C$OMP$PRIVATE(i,j,ptemp,ftemp,ifl) 
-cccC$OMP$SCHEDULE(DYNAMIC)
-cccC$OMP$NUM_THREADS(1) 
-      do j=1,m
-         if (ifslp .eq. 1) ifl = 0
-         if (ifslp .eq. 2) ifl = 1
-         if (ifslp .ne. 0) then
-            call direct3dtrihelms2(ifl,j,ntri,zk,nqtri,centroids,charge,
-     $          triangles,ptemp,ftemp)
-            if( ifpot .eq. 1 ) pot2(j) = pot2(j) + ptemp
-            if( iffld .eq. 1 ) then
-               fld2(1,j) = fld2(1,j) + ftemp(1)
-               fld2(2,j) = fld2(2,j) + ftemp(2)
-               fld2(3,j) = fld2(3,j) + ftemp(3)
-            endif
-         endif
-         if (ifdlp .ne. 0) then
-            call direct3dtrihelmd2(ifl,j,ntri,zk,nqti,centroids,dipstr,
-     $        triangles,trinorm,ptemp,ftemp)
-            if( ifpot .eq. 1) pot2(j) = pot2(j) + ptemp
-            if( iffld .eq. 1) then
-               fld2(1,j) = fld2(1,j) + ftemp(1)
-               fld2(2,j) = fld2(2,j) + ftemp(2)
-               fld2(3,j) = fld2(3,j) + ftemp(3)
-            endif
-         endif
-      enddo
-C$OMP END PARALLEL DO
-c
+
+      call h3dtriadirect_test(ms,mt,nqtri,zk,ntri,
+     $   triangles,trinorm,centroids,
+     $   ifslp,charge,ifdlp,dipstr,trinorm,
+     $   ifpot,pot2,iffld,fld2,
+     $   ntarget,target,ifpottarg,pot3,iffldtarg,fld3)
+
       if (iffld.eq.1) then
          do i=1,m
             potn2(i) = fld2(1,i)*trinorm(1,i) +
@@ -537,5 +516,223 @@ c
 c       
       return
       end
+c
+c
+
+
+
+        subroutine h3dtriadirect_test(ms,mt,nqtri,zk,nsource,
+     $     triaflat,trianorm,
+     $     source,ifcharge,charge,ifdipole,dipstr,dipvec,
+     $     ifpot,pot,iffld,fld,ntarget,
+     $     target,ifpottarg,pottarg,iffldtarg,fldtarg)
+        implicit real *8 (a-h,o-z)
+c
+c       Helmholtz interactions in R^3: evaluate all pairwise triangle
+c       interactions (including self-interaction) + interactions with targets
+c       via direct O(N^2) algorithm.
+c
+c       This is the principal subroutine for evaluating 
+c       Helmholtz layer potentials on (flat) triangulated surfaces.
+c       It permits the evaluation of a single layer potential
+c       with piecewise constant density defined by <<charge>>
+c       and a dipole layer potential with piecewise constant density 
+c       and dipole orientation defined by <<dipstr,dipvec>>.
+c
+c       We use (exp(ikr)/r) for the Green's function,
+c       without the (1/4 pi) scaling.  Self-interactions are included.
+c   
+c       It is capable of evaluating the layer potentials either on 
+c       or off the surface (or both).            
+c
+c       The quadratures are approximate: we subtract the 1/r singular
+c       part and proceed with a quadrature for smooth functions of each
+c       triangle. The accuracy of this scheme is controlled by the
+c       user-defined parameter nqtri.
+c
+c       INPUT PARAMETERS:
+c       
+c       ms: integer: numer of sources to be tested
+c       mt: integer: numer of targets to be tested
+c
+c       nqtri: integer: number of quadrature nodes.
+c          Suggested values for nqtri, assuming resonably regular triangulation.
+c          iprec:  FMM precision flag
+c                 -2 => tolerance =.5d0
+c                 -1 => tolerance =.5d-1
+c                  0 => tolerance =.5d-2
+c                  1 => tolerance =.5d-3
+c                  2 => tolerance =.5d-6
+c                  3 => tolerance =.5d-9
+c                  4 => tolerance =.5d-12
+c                  5 => tolerance =.5d-15
+c          if( iprec .eq. -2 ) nqtri=1
+c          if( iprec .eq. -1 ) nqtri=2
+c          if( iprec .eq.  0 ) nqtri=3
+c          if( iprec .ge.  1 ) nqtri=6
+c       zk: complex *16: Helmholtz parameter
+c       nsource: integer:  number of triangles
+c       triaflat: real *8 (3,3,nsource): triangle coordinate array
+c       trianorm: real *8 (3,nsource): triangle normals
+c       source: real *8 (3,nsource):  triangle centroids
+c       ifcharge:  single layer potential (SLP) flag
+c                  ifcharge = 1   =>  include SLP contribution
+c                                     otherwise do not
+c                  ifcharge = 2   =>  include SLP contribution and
+c                                     subtract Laplace SLP
+c       charge: complex *16 (nsource): piecewise constant SLP strength
+c       ifdipole:  dipole layer potential (DLP) flag
+c                  ifdipole = 1   =>  include DLP contribution
+c                                     otherwise do not
+c                  ifdipole = 2   =>  include DLP contribution and
+c                                     subtract Laplace SLP
+c       dipstr: complex *16 (nsource): piecewise constant DLP strengths
+c       dipvec: real *8 (3,nsource): piecewise constant dipole orientation 
+c                                    vectors. 
+c
+c           NOTE: In the present version, dipvec MUST BE SET EQUAL
+c                 to the triangle normal. It is here as an additional
+c                 parameter for future use, where an arbitrarily 
+c                 oriented dipole vector is permitted.
+c
+c       ifpot:  potential flag (1=compute potential, otherwise no)
+c       iffld:  field flag (1=compute field, otherwise no)
+c       ntarget: integer:  number of targets
+c       target: real *8 (3,ntarget):  target locations
+c       ifpottarg:  target potential flag 
+c                   (1=compute potential, otherwise no)
+c       iffldtarg:  target field flag 
+c                   (1=compute field, otherwise no)
+c
+c       OUTPUT PARAMETERS:
+c
+c       pot: complex *16 (nsource): potential at triangle centroids
+c       fld: complex *16 (3,nsource): field (-gradient) at triangle centroids 
+c       pottarg: complex *16 (ntarget): potential at target locations 
+c       fldtarg: complex *16 (3,ntarget): field (-gradient) at target locations 
+c
+c
+        real *8 triaflat(3,3,1),trianorm(3,1)
+c
+        real *8 source(3,1),dipvec(3,1)
+        complex *16 charge(1),dipstr(1),zk
+        real *8 target(3,1)
+c
+        complex *16 pot(1),fld(3,1),pottarg(1),fldtarg(3,1)
+        complex *16 ptemp,ftemp(3)
+c
+c
+        do i=1,nsource
+        if( ifpot .eq. 1) pot(i)=0
+        if( iffld .eq. 1) then
+           fld(1,i)=0
+           fld(2,i)=0
+           fld(3,i)=0
+        endif
+        enddo
+c       
+        do i=1,ntarget
+        if( ifpottarg .eq. 1) pottarg(i)=0
+        if( iffldtarg .eq. 1) then
+           fldtarg(1,i)=0
+           fldtarg(2,i)=0
+           fldtarg(3,i)=0
+        endif
+        enddo
+c
+        ione = 1
+        if( ifpot .eq. 1 .or. iffld .eq. 1 ) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,ptemp,ftemp,ifl) 
+        do j=1,ms
+        do i=1,nsource
+c
+        if (ifcharge.eq.1) ifl=0
+        if (ifcharge.eq.2) ifl=1
+        if (ifcharge.ne.0) then
+        if( i .eq. j ) then
+        call direct3dtrihelms2(ifl,ione,ione,zk,nqtri,
+     1     source(1,j),charge(j),triaflat(1,1,j),ptemp,ftemp)
+        else
+        call direct3dtritarghelms3(ifl,ione,source(1,j),zk,
+     $     nqtri,charge(i),triaflat(1,1,i),ifpot,ptemp,iffld,ftemp)
+        endif
+        if (ifpot.eq.1) pot(j)=pot(j)+ptemp
+        if (iffld.eq.1) then
+        fld(1,j)=fld(1,j)+ftemp(1)
+        fld(2,j)=fld(2,j)+ftemp(2)
+        fld(3,j)=fld(3,j)+ftemp(3)
+        endif
+        endif
+c
+        if (ifdipole.eq.1) ifl=0
+        if (ifdipole.eq.2) ifl=1
+        if (ifdipole.ne.0) then
+        if( i .eq. j ) then
+        call direct3dtrihelmd2(ifl,ione,ione,zk,nqtri,
+     $     source(1,j),dipstr(j),triaflat(1,1,j),
+     $     trianorm(1,j),ptemp,ftemp)
+        else
+        call direct3dtritarghelmd3(ifl,ione,source(1,j),zk,
+     $     nqtri,dipstr(i),triaflat(1,1,i),
+     $     trianorm(1,i),ifpot,ptemp,iffld,ftemp)
+        endif
+        if (ifpot.eq.1) pot(j)=pot(j)+ptemp
+        if (iffld.eq.1) then
+        fld(1,j)=fld(1,j)+ftemp(1)
+        fld(2,j)=fld(2,j)+ftemp(2)
+        fld(3,j)=fld(3,j)+ftemp(3)
+        endif
+        endif
+c
+        enddo
+        enddo
+C$OMP END PARALLEL DO
+        endif
+
+        if( ifpottarg .eq. 1 .or. iffldtarg .eq. 1 ) then
+C$OMP PARALLEL DO DEFAULT(SHARED)
+C$OMP$PRIVATE(i,j,ptemp,ftemp,ifl) 
+        do j=1,mt
+        do i=1,nsource
+c
+        if (ifcharge.eq.1) ifl=0
+        if (ifcharge.eq.2) ifl=1
+        if (ifcharge.ne.0) then
+        call direct3dtritarghelms3(ifl,ione,target(1,j),zk,
+     $     nqtri,charge(i),triaflat(1,1,i),
+     $     ifpottarg,ptemp,iffldtarg,ftemp)
+        if (ifpottarg.eq.1) pottarg(j)=pottarg(j)+ptemp
+        if (iffldtarg.eq.1) then
+        fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+        fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+        fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+        endif
+        endif
+c
+        if (ifdipole.eq.1) ifl=0
+        if (ifdipole.eq.2) ifl=1
+        if (ifdipole.ne.0) then
+        call direct3dtritarghelmd3(ifl,ione,target(1,j),zk,
+     $     nqtri,dipstr(i),triaflat(1,1,i),
+     $     trianorm(1,i),ifpottarg,ptemp,iffldtarg,ftemp)
+        if (ifpottarg.eq.1) pottarg(j)=pottarg(j)+ptemp
+        if (iffldtarg.eq.1) then
+        fldtarg(1,j)=fldtarg(1,j)+ftemp(1)
+        fldtarg(2,j)=fldtarg(2,j)+ftemp(2)
+        fldtarg(3,j)=fldtarg(3,j)+ftemp(3)
+        endif
+        endif
+c
+        enddo
+        enddo
+C$OMP END PARALLEL DO
+        endif
+c
+        return
+        end
+c
+c
+c
 c
 c

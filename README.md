@@ -4,6 +4,25 @@ Date: November 9, 2017
 
 Version 1.2.2
 
+The FMMLIB3D suite permits the evaluation of potential fields governed
+by the Laplace, Helmholtz equations in free space.
+
+FMMLIB3D provides subroutines for particle (point) sources as well as
+constant layer potential densities on triangles. The codes are easy to
+use and reasonably well optimized for performance. A rudimentary
+manual is provided in the FMM3D/doc directory.
+
+FMMLIB3D contains both Fortran source code and versions compiled for
+MATLAB under Mac OS X (64 bit), Windows (32 bit and 64 bit), and Linux
+(64 bit).
+
+This work was supported in part by the Department of Energy and in
+part by the Air Force Office of Scientific Research under MURI grant
+FA9550-06-1-0337 and NSSEFF Program Award FA9550-10-0180, in part by
+the NSF under grant DMS09-34733, and in part by Meyer Sound
+Laboratories, Inc.
+
+
 ### License
 
 ```

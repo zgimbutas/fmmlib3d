@@ -118,10 +118,10 @@ ier=0;
 
 if( ntarget == 0 ) 
 mex_id_ = 'lfmm3dpartself(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])';
-[ier, pot, fld] = fmm3d_r2012a(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1);
+[ier, pot, fld] = fmm3d(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1);
 else
 mex_id_ = 'lfmm3dparttarg(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])';
-[ier, pot, fld, pottarg, fldtarg] = fmm3d_r2012a(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarget, target, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
+[ier, pot, fld, pottarg, fldtarg] = fmm3d(mex_id_, ier, iprec, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarget, target, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
 end
 
 if( ifpot == 1 ), U.pot=pot; end

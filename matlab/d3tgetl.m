@@ -23,7 +23,7 @@ list = zeros(1,10000);
 nlist = 0;
 
 mex_id_ = 'd3tgetl(io int[x], i int[x], i int[x], io int[], io int[], i double[])';
-[ier, list, nlist] = fmm3d_r2012a(mex_id_, ier, ibox, itype, list, nlist, lists, 1, 1, 1);
+[ier, list, nlist] = fmm3d(mex_id_, ier, ibox, itype, list, nlist, lists, 1, 1, 1);
 
 if( ier == 0 ), list = list(1,1:nlist); end
 if( ier  > 0 ), list = list(1,1); end

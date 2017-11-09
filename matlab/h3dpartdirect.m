@@ -104,7 +104,7 @@ if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
 ier=0;
 
 mex_id_ = 'h3dpartdirect(i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])';
-[pot, fld, pottarg, fldtarg] = fmm3d_r2012a(mex_id_, zk, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarget, target, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
+[pot, fld, pottarg, fldtarg] = fmm3d(mex_id_, zk, nsource, source, ifcharge, charge, ifdipole, dipstr, dipvec, ifpot, pot, iffld, fld, ntarget, target, ifpottarg, pottarg, iffldtarg, fldtarg, 1, 1, 3, nsource, 1, 1, 3, nsource, 1, 1, 1, 1, 1);
 
 
 if( ifpot == 1 ), U.pot=pot; end

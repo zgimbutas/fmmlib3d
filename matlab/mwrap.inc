@@ -44,7 +44,7 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 ###MEX_LIBS=-lm
-MEX_LIBS=-Wl,--no-undefined -lm -ldl
+MEX_LIBS=-Wl,--no-undefined -lm -ldl -lgfortran
 MEX_LINK=
 
 MEX_FLAGS=
@@ -69,7 +69,7 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 ###MEX_LIBS=-lgomp -lm
-MEX_LIBS=-Wl,--no-undefined -lgomp -lm -ldl
+MEX_LIBS=-Wl,--no-undefined -lgomp -lm -ldl -lgfortran
 MEX_LINK=
 
 MEX_FLAGS=
@@ -152,7 +152,7 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 MEX_LIBS=-Wl,--rpath,$(intel_libs) -L$(intel_libs)  -lifcore -lsvml -limf -lintlc -lm
-MEX_LINK=-o $(MEX_GATEWAY).mexa64
+MEX_LINK=-output $(MEX_GATEWAY).mexa64
 
 MEX_FLAGS=
 OBJSUF=o
@@ -182,7 +182,7 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 MEX_LIBS=-Wl,--rpath,$(intel_libs) -L$(intel_libs) -lifcoremt -lsvml -limf -liomp5 -lintlc -lm
-MEX_LINK=-o $(MEX_GATEWAY).mexa64
+MEX_LINK=-output $(MEX_GATEWAY).mexa64
 
 MEX_FLAGS=
 OBJSUF=o
@@ -323,7 +323,7 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 MEX_LIBS=-lgfortran -lm
-MEX_LINK=-o $(MEX_GATEWAY)_single.mexa64
+MEX_LINK=-output $(MEX_GATEWAY)_single.mexa64
 
 MEX_FLAGS=
 OBJSUF=o
@@ -352,7 +352,7 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 MEX_LIBS=-lgomp -lgfortran -lm
-MEX_LINK=-o $(MEX_GATEWAY).mexa64
+MEX_LINK=-output $(MEX_GATEWAY).mexa64
 
 MEX_FLAGS=
 OBJSUF=o

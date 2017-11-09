@@ -4,7 +4,7 @@
 #  gfortran > 4.4.0 is strongly recommended
 #
 
-PROJECT = fmm3d_r2012a
+PROJECT = fmm3d
 MEX_GATEWAY = $(PROJECT)
 
 

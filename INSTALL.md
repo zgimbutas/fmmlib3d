@@ -1,4 +1,4 @@
-# INSTALLATION NOTES FOR FMMLIB2D
+# INSTALLATION NOTES FOR FMMLIB3D
 
 3/20/17
 
@@ -30,10 +30,6 @@ for a single-threaded test, or
 
 `make test-openmp`
 
-When requested to `ENTER n`, a good number to enter is 10000 (do not format this
-as 1e4, since it can only read integer formats).
-
-Errors in outputs close to machine precision should be reported.
 
 To prevent segfaults in fortran executables with openmp, you will want to do the following in your shell:
 

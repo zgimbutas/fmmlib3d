@@ -1,8 +1,8 @@
 # Helmholtz and Laplace FMM library in R^3.
 
-Date: November 8, 2017
+Date: November 9, 2017
 
-Version 1.2.1
+Version 1.2.2
 
 ### License
 

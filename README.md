@@ -13,8 +13,7 @@ use and reasonably well optimized for performance. A rudimentary
 manual is provided in the FMM3D/doc directory.
 
 FMMLIB3D contains both Fortran source code and versions compiled for
-MATLAB under Mac OS X (64 bit), Windows (32 bit and 64 bit), and Linux
-(64 bit).
+MATLAB under Mac OS X (64 bit), Windows (64 bit), and Linux (64 bit).
 
 This work was supported in part by the Department of Energy and in
 part by the Air Force Office of Scientific Research under MURI grant

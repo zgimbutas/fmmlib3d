@@ -15,12 +15,6 @@ manual is provided in the FMM3D/doc directory.
 FMMLIB3D contains both Fortran source code and versions compiled for
 MATLAB under Mac OS X (64 bit), Windows (64 bit), and Linux (64 bit).
 
-This work was supported in part by the Department of Energy and in
-part by the Air Force Office of Scientific Research under MURI grant
-FA9550-06-1-0337 and NSSEFF Program Award FA9550-10-0180, in part by
-the NSF under grant DMS09-34733, and in part by Meyer Sound
-Laboratories, Inc.
-
 
 ### License
 
@@ -150,3 +144,12 @@ l2dpartdirect - Laplace particle interactions in R^3.
 %   fmm3dprini   - initialize simple printing routines.
 %
 ```
+
+### Acknowledgments
+
+This work was supported in part by the Department of Energy and in
+part by the Air Force Office of Scientific Research under MURI grant
+FA9550-06-1-0337 and NSSEFF Program Award FA9550-10-0180, in part by
+the NSF under grant DMS09-34733, and in part by Meyer Sound
+Laboratories, Inc.
+

@@ -126,7 +126,7 @@ if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
 ier=0;
 
 %
-% The following assumes resonably regular triangulation.
+% The following assumes reasonably regular triangulation.
 %
 %       nqtri: integer: number of quadrature nodes.
 %          Suggested values for nqtri

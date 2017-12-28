@@ -4185,7 +4185,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1541 ----
+/* ---- fmm3d.mw: 1542 ----
  * prini(int[1] unit1, int[1] unit2);
  */
 const char* stubids18_ = "prini(i int[x], i int[x])";
@@ -4233,7 +4233,7 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1638 ----
+/* ---- fmm3d.mw: 1639 ----
  * hfmm3dtriampftarg(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
 const char* stubids19_ = "hfmm3dtriampftarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
@@ -4555,8 +4555,8 @@ void mexFunction(int nlhs, mxArray* plhs[],
         mexPrintf("%d calls to fmm3d.mw:1412\n", mexprofrecord_[15]);
         mexPrintf("%d calls to fmm3d.mw:1495\n", mexprofrecord_[16]);
         mexPrintf("%d calls to fmm3d.mw:1523\n", mexprofrecord_[17]);
-        mexPrintf("%d calls to fmm3d.mw:1541\n", mexprofrecord_[18]);
-        mexPrintf("%d calls to fmm3d.mw:1638\n", mexprofrecord_[19]);
+        mexPrintf("%d calls to fmm3d.mw:1542\n", mexprofrecord_[18]);
+        mexPrintf("%d calls to fmm3d.mw:1639\n", mexprofrecord_[19]);
     } else if (strcmp(id, "*profile log*") == 0) {
         FILE* logfp;
         if (nrhs != 2 || mxGetString(prhs[1], id, sizeof(id)) != 0)
@@ -4583,8 +4583,8 @@ void mexFunction(int nlhs, mxArray* plhs[],
         fprintf(logfp, "%d calls to fmm3d.mw:1412\n", mexprofrecord_[15]);
         fprintf(logfp, "%d calls to fmm3d.mw:1495\n", mexprofrecord_[16]);
         fprintf(logfp, "%d calls to fmm3d.mw:1523\n", mexprofrecord_[17]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1541\n", mexprofrecord_[18]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1638\n", mexprofrecord_[19]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1542\n", mexprofrecord_[18]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1639\n", mexprofrecord_[19]);
         fclose(logfp);
     } else
         mexErrMsgTxt("Unknown identifier");

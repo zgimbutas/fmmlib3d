@@ -51,7 +51,10 @@ test-mwrap-mex-octave: mwrap
 
 mwrap: 
 	cd $(MWRAP); $(MAKE) 
-	cp -f $(MWRAP)/mwrap ./bin
+	cp -f $(MWRAP)/mwrap ./bin/
+
+test-mwrap-mex-octave: mwrap 
+	cd $(MATLAB); $(MAKE) linux-octave-64bit
 
 all: lib test doc mwrap mex test-mex-octave
 

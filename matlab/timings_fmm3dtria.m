@@ -9,7 +9,7 @@
 geom_type = 2;
 filename_geo = 'sphere320.a.tri';
 filename_geo = 'sphere1280.a.tri';
-filename_geo = 'psm1.a.tri';
+%%%filename_geo = 'psm1.a.tri';
 %%%filename_geo = 'psm2.a.tri';
 %%%filename_geo = 'sphere11520.a.tri';
 %%%filename_geo = 'cube768.a.tri';
@@ -49,7 +49,7 @@ iffld = 1
 
 tic
 iprec=0
-U=hfmm3dtrif(iprec,zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec);
+U=hfmm3dtria(iprec,zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec);
 total_time=toc
 speed=ntri/total_time
 
@@ -78,7 +78,7 @@ iffld = 0
 
 tic
 iprec=0
-U=hfmm3dtrif(iprec,zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec);
+U=hfmm3dtria(iprec,zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec);
 total_time=toc
 speed=ntri/total_time
 

@@ -431,7 +431,7 @@ MWF77_RETURN MWF77_hfmm3dtriampftarg(int*, int*, dcomplex*, int*, double*, doubl
 /* ---- fmm3d.mw: 143 ----
  * hfmm3dtriaself(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld);
  */
-const char* stubids1_ = "hfmm3dtriaself(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids1_ = "hfmm3dtriaself(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub1(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -651,7 +651,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 145 ----
  * hfmm3dtriatarg(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids2_ = "hfmm3dtriatarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids2_ = "hfmm3dtriatarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub2(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -938,7 +938,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 308 ----
  * h3dtriadirect(int[1] nqtri, dcomplex[1] zk, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids3_ = "h3dtriadirect(i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids3_ = "h3dtriadirect(i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub3(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1209,7 +1209,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 446 ----
  * lfmm3dtriaself(inout int[1] ier, int[1] iprec, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld);
  */
-const char* stubids4_ = "lfmm3dtriaself(io int[x], i int[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids4_ = "lfmm3dtriaself(io int[x], i int[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub4(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1415,7 +1415,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 448 ----
  * lfmm3dtriatarg(inout int[1] ier, int[1] iprec, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids5_ = "lfmm3dtriatarg(io int[x], i int[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids5_ = "lfmm3dtriatarg(io int[x], i int[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub5(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1688,7 +1688,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 571 ----
  * l3dtriadirect(int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids6_ = "l3dtriadirect(i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids6_ = "l3dtriadirect(i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub6(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -1931,7 +1931,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 702 ----
  * hfmm3dpartself(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld);
  */
-const char* stubids7_ = "hfmm3dpartself(io int[x], i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids7_ = "hfmm3dpartself(io int[x], i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub7(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2131,7 +2131,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 704 ----
  * hfmm3dparttarg(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids8_ = "hfmm3dparttarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids8_ = "hfmm3dparttarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub8(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2398,7 +2398,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 819 ----
  * h3dpartdirect(dcomplex[1] zk, int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids9_ = "h3dpartdirect(i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids9_ = "h3dpartdirect(i dcomplex[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub9(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2635,7 +2635,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 948 ----
  * lfmm3dpartself(inout int[1] ier, int[1] iprec, int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld);
  */
-const char* stubids10_ = "lfmm3dpartself(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids10_ = "lfmm3dpartself(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub10(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -2821,7 +2821,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 950 ----
  * lfmm3dparttarg(inout int[1] ier, int[1] iprec, int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids11_ = "lfmm3dparttarg(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids11_ = "lfmm3dparttarg(io int[x], i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub11(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3074,7 +3074,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 1064 ----
  * l3dpartdirect(int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids12_ = "l3dpartdirect(i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids12_ = "l3dpartdirect(i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub12(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3297,7 +3297,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 1180 ----
  * l3dpartdirecttime(int[1] ms, int[1] nsource, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ifpot, inout dcomplex[] pot, int[1] iffld, inout dcomplex[] fld, int[1] mt, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids13_ = "l3dpartdirecttime(i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids13_ = "l3dpartdirecttime(i int[x], i int[x], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], io dcomplex[], i int[x], io dcomplex[], i int[x], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub13(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3548,7 +3548,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 1279 ----
  * d3tstrcr(inout int[1] ier, double[] source, int[1] nsource, inout int[1] nbox, inout int[1] nboxes, inout int[] isource, inout int[] laddr, inout int[1] nlev, inout double[] center, inout double[] size, double[] target, int[1] ntarget, inout int[] itarget, inout double[] w, int[1] lw, inout int[1] lused);
  */
-const char* stubids14_ = "d3tstrcr(io int[x], i double[], i int[x], io int[x], io int[x], io int[], io int[], io int[x], io double[], io double[], i double[], i int[x], io int[], io double[], i int[x], io int[x])";
+static const char* stubids14_ = "d3tstrcr(io int[x], i double[], i int[x], io int[x], io int[x], io int[], io int[], io int[x], io double[], io double[], i double[], i int[x], io int[], io double[], i int[x], io int[x])";
 
 void mexStub14(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -3760,7 +3760,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 1412 ----
  * d3tstrcrem(inout int[1] ier, double[] source, int[1] nsource, inout int[1] nbox, inout int[1] nboxes, inout int[] isource, inout int[] laddr, inout int[1] nlev, inout double[] center, inout double[] size, double[] target, int[1] ntarget, inout int[] itarget, inout double[] w, int[1] lw, inout int[1] lused, int[1] ifempty, int[1] minvel, int[1] maxlev);
  */
-const char* stubids15_ = "d3tstrcrem(io int[x], i double[], i int[x], io int[x], io int[x], io int[], io int[], io int[x], io double[], io double[], i double[], i int[x], io int[], io double[], i int[x], io int[x], i int[x], i int[x], i int[x])";
+static const char* stubids15_ = "d3tstrcrem(io int[x], i double[], i int[x], io int[x], io int[x], io int[], io int[], io int[x], io double[], io double[], i double[], i int[x], io int[], io double[], i int[x], io int[x], i int[x], i int[x], i int[x])";
 
 void mexStub15(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4014,7 +4014,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 1495 ----
  * d3tgetb(inout int[1] ier, int[1] ibox, inout int[] box, inout double[] center, inout double[] corners, double[] lists);
  */
-const char* stubids16_ = "d3tgetb(io int[x], i int[x], io int[], io double[], io double[], i double[])";
+static const char* stubids16_ = "d3tgetb(io int[x], i int[x], io int[], io double[], io double[], i double[])";
 
 void mexStub16(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4099,7 +4099,7 @@ mw_err_label:
 /* ---- fmm3d.mw: 1523 ----
  * d3tgetl(inout int[1] ier, int[1] ibox, int[1] itype, inout int[] list, inout int[] nlist, double[] lists);
  */
-const char* stubids17_ = "d3tgetl(io int[x], i int[x], i int[x], io int[], io int[], i double[])";
+static const char* stubids17_ = "d3tgetl(io int[x], i int[x], i int[x], io int[], io int[], i double[])";
 
 void mexStub17(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4185,10 +4185,10 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1541 ----
+/* ---- fmm3d.mw: 1542 ----
  * prini(int[1] unit1, int[1] unit2);
  */
-const char* stubids18_ = "prini(i int[x], i int[x])";
+static const char* stubids18_ = "prini(i int[x], i int[x])";
 
 void mexStub18(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4233,10 +4233,10 @@ mw_err_label:
         mexErrMsgTxt(mw_err_txt_);
 }
 
-/* ---- fmm3d.mw: 1638 ----
+/* ---- fmm3d.mw: 1639 ----
  * hfmm3dtriampftarg(inout int[1] ier, int[1] iprec, dcomplex[1] zk, int[1] nsource, double[] triaflat, double[3, nsource] trianorm, double[3, nsource] source, int[1] ifcharge, dcomplex[] charge, int[1] ifdipole, dcomplex[] dipstr, double[3, nsource] dipvec, int[1] ntarget, double[] target, int[1] ifpottarg, inout dcomplex[] pottarg, int[1] iffldtarg, inout dcomplex[] fldtarg);
  */
-const char* stubids19_ = "hfmm3dtriampftarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
+static const char* stubids19_ = "hfmm3dtriampftarg(io int[x], i int[x], i dcomplex[x], i int[x], i double[], i double[xx], i double[xx], i int[x], i dcomplex[], i int[x], i dcomplex[], i double[xx], i int[x], i double[], i int[x], io dcomplex[], i int[x], io dcomplex[])";
 
 void mexStub19(int nlhs, mxArray* plhs[],
               int nrhs, const mxArray* prhs[])
@@ -4555,8 +4555,8 @@ void mexFunction(int nlhs, mxArray* plhs[],
         mexPrintf("%d calls to fmm3d.mw:1412\n", mexprofrecord_[15]);
         mexPrintf("%d calls to fmm3d.mw:1495\n", mexprofrecord_[16]);
         mexPrintf("%d calls to fmm3d.mw:1523\n", mexprofrecord_[17]);
-        mexPrintf("%d calls to fmm3d.mw:1541\n", mexprofrecord_[18]);
-        mexPrintf("%d calls to fmm3d.mw:1638\n", mexprofrecord_[19]);
+        mexPrintf("%d calls to fmm3d.mw:1542\n", mexprofrecord_[18]);
+        mexPrintf("%d calls to fmm3d.mw:1639\n", mexprofrecord_[19]);
     } else if (strcmp(id, "*profile log*") == 0) {
         FILE* logfp;
         if (nrhs != 2 || mxGetString(prhs[1], id, sizeof(id)) != 0)
@@ -4583,8 +4583,8 @@ void mexFunction(int nlhs, mxArray* plhs[],
         fprintf(logfp, "%d calls to fmm3d.mw:1412\n", mexprofrecord_[15]);
         fprintf(logfp, "%d calls to fmm3d.mw:1495\n", mexprofrecord_[16]);
         fprintf(logfp, "%d calls to fmm3d.mw:1523\n", mexprofrecord_[17]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1541\n", mexprofrecord_[18]);
-        fprintf(logfp, "%d calls to fmm3d.mw:1638\n", mexprofrecord_[19]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1542\n", mexprofrecord_[18]);
+        fprintf(logfp, "%d calls to fmm3d.mw:1639\n", mexprofrecord_[19]);
         fclose(logfp);
     } else
         mexErrMsgTxt("Unknown identifier");

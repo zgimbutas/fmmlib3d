@@ -280,7 +280,7 @@ if( iffldtarg == 1 ), fldtarg=zeros(3,ntarget)+1i*zeros(3,ntarget); end;
 ier=0;
 
 %
-% The following assumes resonably regular triangulation.
+% The following assumes reasonably regular triangulation.
 %
 %       nqtri: integer: number of quadrature nodes.
 %          Suggested values for nqtri
@@ -1531,7 +1531,8 @@ if( ier  > 0 ), list = list(1,1); end
 @function fmm3dprini(unit1,unit2)
 %FMM3DPRINI Initialize simple printing routines.
 %
-% Calling FMM3DPRINI(6,13) causes printing to screen and file fort.13.     
+% Calling FMM3DPRINI(6,13) causes printing to screen and file fort.13.
+% Calling FMM3DPRINI(0,0) stops printing.
 %
 
 if (nargin == 1 )

@@ -82,7 +82,7 @@ total_time=toc
 
 'Helmholtz triangle target direct evaluation in R^3'
 tic
-[F]=h3dtriadirect(zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg);
+[F]=h3dtriadirect(iprec,zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld,ntarget,target,ifpottarg,iffldtarg);
 total_time=toc
 
 
@@ -144,7 +144,7 @@ total_time=toc
 'Helmholtz triangle direct evaluation in R^3'
 
 tic
-[F]=h3dtriadirect(zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld);
+[F]=h3dtriadirect(iprec,zk,ntri,triangles,trianorm,source,ifcharge,charge,ifdipole,dipstr,dipvec,ifpot,iffld);
 total_time=toc
 
 

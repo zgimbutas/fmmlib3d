@@ -1,6 +1,6 @@
 # INSTALLATION NOTES FOR FMMLIB3D
 
-3/20/17
+3/7/21
 
 ### Requirements:
 
@@ -30,6 +30,12 @@ for a single-threaded test, or
 
 `make test-openmp`
 
+When requested to `ENTER n`, a good number to enter is 10000 (do not format this
+as 1e4, since it can only read integer formats).
+
+Errors in outputs close to machine precision should be reported. 
+Warnings about floating-point exceptions are normal and to be ignored.
+
 
 To prevent segfaults in fortran executables with openmp, you will want to do the following in your shell:
 
@@ -42,3 +48,21 @@ ulimit -s unlimited            # unlimited stack
 This is because large static allocations are used in the fortran test drivers.
 
 Please type `make` to see a list of other make options.
+
+
+**Note** if using gfortran v 10 or above: Since we use passing of size-1 arrays
+as pointers, GCC10+ raises errors. You will need to add
+```
+FFLAGS+=-std=legacy
+```
+in the relevant sections of `src/Makefile` and `examples/*.make`
+which turns these into mere warnings.
+
+
+### Octave notes
+
+These routines are identical to the MATLAB ones.
+To test the shipped mex binary, use eg
+`cd matlab; octave test_hfmm3dpart_direct.m`.
+To rebuild the binary use `make mex-octave`, then test as above.
+

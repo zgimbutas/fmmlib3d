@@ -51,7 +51,7 @@ c***********************************************************************
         subroutine atrireadchk(ir,verts,lv,nverts,ifaces,li,nfaces,ier)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension verts(3,1),ifaces(3,1)
+        dimension verts(3,*),ifaces(3,*)
 c
 c       read geometry description file in (.tri) format. 
 c
@@ -87,7 +87,7 @@ c***********************************************************************
         subroutine atriread(ir,verts,nverts,ifaces,nfaces)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension verts(3,1),ifaces(3,1)
+        dimension verts(3,*),ifaces(3,*)
 c
 c       read geometry description file in (.tri) format. 
 c
@@ -112,7 +112,7 @@ c***********************************************************************
         subroutine atriwrite(iw,verts,nverts,ifaces,nfaces)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension verts(3,1),ifaces(3,1)
+        dimension verts(3,*),ifaces(3,*)
 c
 c       write geometry description file in cart3d (.tri) format. 
 c
@@ -130,7 +130,7 @@ c***********************************************************************
         subroutine atriwrite2(iw,verts,nverts,ifaces,itrinew,nfaces)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension verts(3,1),ifaces(3,1),itrinew(1)
+        dimension verts(3,*),ifaces(3,*),itrinew(*)
 c
 c       write geometry description file in cart3d (.tri) format. 
 c
@@ -155,7 +155,7 @@ c
 c     write triangles into an OOGL OFF file
 c     
       implicit real *8 (a-h,o-z)
-      dimension verts(3,1),ifaces(3,1)
+      dimension verts(3,*),ifaces(3,*)
       integer nedges
       
 ccc   nb of edges of a triangle is 3
@@ -192,9 +192,9 @@ c     trinorm(3,ntri)       array of triangle normals
 c     triarea(3,ntri)       array of triangle areas
 c
       implicit real *8 (a-h,o-z)
-      integer itri, ntri, itrivert(3,1)
-      real *8   verts(3,1), centroids(3,1)
-      real *8   triangle(3,3,1), trinorm(3,1), triarea(1)
+      integer itri, ntri, itrivert(3,*)
+      real *8   verts(3,*), centroids(3,*)
+      real *8   triangle(3,3,*), trinorm(3,*), triarea(*)
       real *8   v11, v21, v31, v12, v22, v32, v13, v23, v33
 c
       do itri = 1,ntri
@@ -317,7 +317,7 @@ c***********************************************************************
         subroutine rotder3d(w,triang,valx,valy,valz,derx,dery,derz)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension w(1),triang(3,3)
+        dimension w(*),triang(3,3)
         dimension derin(3),derout(3)
 c
 c       transform the gradient in the rotated triangle coordinate 
@@ -347,7 +347,7 @@ c***********************************************************************
         subroutine rotder3db(w,triang,valx,valy,valz,derx,dery,derz)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension w(1),triang(3,3)
+        dimension w(*),triang(3,3)
         dimension derin(3),derout(3)
 c
 c       transform the gradient in the rotated coordinate system to the
@@ -376,7 +376,7 @@ c***********************************************************************
         subroutine rotder3df(w,triang,valx,valy,valz,derx,dery,derz)
 c***********************************************************************
         implicit real *8 (a-h,o-z)
-        dimension w(1),triang(3,3)
+        dimension w(*),triang(3,3)
         dimension derin(3),derout(3)
 c
 c       transform the gradient in the original coordinate system to the
@@ -687,7 +687,7 @@ c
 c
         subroutine tri_for_vect(w,zin,zout)
         implicit real *8 (a-h,o-z)
-        dimension w(1),zin(3),zout(3),shift(3)
+        dimension w(*),zin(3),zout(3),shift(3)
 c       
 c       this entry applies the mapping to the vector zin \in R^3,
 c       returning zout.
@@ -703,7 +703,7 @@ c
 c       
         subroutine tri_bak_vect(w,zin,zout)
         implicit real *8 (a-h,o-z)
-        dimension w(1),zin(3),zout(3),shift(3)
+        dimension w(*),zin(3),zout(3),shift(3)
 c       
 c       this entry applies the mapping to the vector zin \in R^3,
 c       returning zout.
@@ -718,7 +718,7 @@ c
 c       
         subroutine tri_cfor_vect(w,zin,zout)
         implicit real *8 (a-h,o-z)
-        dimension w(1),shift(3)
+        dimension w(*),shift(3)
         complex *16 zin(3),zout(3)
 c       
 c       this entry applies the mapping to the complex vector zin \in R^3,
@@ -735,7 +735,7 @@ c
 c       
         subroutine tri_cbak_vect(w,zin,zout)
         implicit real *8 (a-h,o-z)
-        dimension w(1),shift(3)
+        dimension w(*),shift(3)
         complex *16 zin(3),zout(3)
 c       
 c       this entry applies the mapping to the complex vector zin \in R^3,

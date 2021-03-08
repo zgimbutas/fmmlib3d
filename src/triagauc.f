@@ -21,8 +21,8 @@ c
         subroutine triagauc(n,vert1,vert2,vert3,rnodes,
      1      weights,ifinit,w)
         implicit real *8 (a-h,o-z)
-        dimension w(1),vert1(1),
-     1      vert3(1),vert2(1),rnodes(1),weights(1)
+        dimension w(*),vert1(2),
+     1      vert3(2),vert2(2),rnodes(2,*),weights(*)
 c
 c       this subroutine constructs a tensor product Gaussian
 c       quadrature formula on the triangle in the plane 
@@ -81,8 +81,8 @@ c
         subroutine triagau0(n,vert1,vert2,vert3,rnodes,weights,
      1      ifinit,t,whts,tvert,whtsvert)
         implicit real *8 (a-h,o-z)
-        dimension w(12),z1(2),z2(2),z3(2),vert1(1),
-     1      vert3(1),vert2(1),rnodes(2,n,n),weights(n,n)
+        dimension w(12),z1(2),z2(2),z3(2),vert1(2),
+     1      vert3(2),vert2(2),rnodes(2,n,n),weights(n,n)
 c
         dimension t(1),whts(1),tvert(1),whtsvert(1)
 c
@@ -246,7 +246,7 @@ c
 c
         subroutine trianini(vert1,vert2,vert3,w)
         implicit real *8 (a-h,o-z)
-        dimension vert1(2),vert2(2),vert3(2),w(1),zin(2),zout(2)
+        dimension vert1(2),vert2(2),vert3(2),w(*),zin(2),zout(2)
         data ixshift/1/,iyshift/2/,iumat/3/,ivmat/7/
 c
 c       this subroutine constructs an affine transformation putting one side

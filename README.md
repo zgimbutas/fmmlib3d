@@ -1,9 +1,22 @@
+# Helmholtz and Laplace FMM library in R^3.
 
-This is the second public release of the particle FMM library in R^3.
+Date: March 7, 2021
 
-Date: November 8, 2017
+Version 1.2.3
 
-Version 1.2.1
+The FMMLIB3D suite permits the evaluation of potential fields governed
+by the Laplace, Helmholtz equations in free space.
+
+FMMLIB3D provides subroutines for particle (point) sources as well as
+constant layer potential densities on triangles. The codes are easy to
+use and reasonably well optimized for performance. A rudimentary
+manual is provided in the FMM3D/doc directory.
+
+FMMLIB3D contains both Fortran source code and versions compiled for
+MATLAB under Mac OS X (64 bit), Windows (64 bit), and Linux (64 bit).
+
+
+### License
 
 ```
 Copyright (C) 2010-2012: Leslie Greengard and Zydrunas Gimbutas
@@ -19,7 +32,7 @@ modification, are permitted provided that the following conditions are met:
    notice, this list of conditions and the following disclaimer in the
    documentation and/or other materials provided with the distribution.
 
-3. Neither the name of the copyright holder nor the names of its
+3. Neither the name of the copyright holders nor the names of its
    contributors may be used to endorse or promote products derived
    from this software without specific prior written permission.
 
@@ -131,3 +144,12 @@ l2dpartdirect - Laplace particle interactions in R^3.
 %   fmm3dprini   - initialize simple printing routines.
 %
 ```
+
+### Acknowledgments
+
+This work was supported in part by the Department of Energy and in
+part by the Air Force Office of Scientific Research under MURI grant
+FA9550-06-1-0337 and NSSEFF Program Award FA9550-10-0180, in part by
+the NSF under grant DMS09-34733, and in part by Meyer Sound
+Laboratories, Inc.
+

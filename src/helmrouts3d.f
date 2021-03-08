@@ -400,7 +400,7 @@ c
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
       integer nterms,ns,i,l,m, ier, ier1, lused
-      real *8 center(1),sources(3,ns)
+      real *8 center(3),sources(3,ns)
       real *8 scale
       complex *16 mpole(0:nterms,-nterms:nterms)
       complex *16 eye,zk,charge(1)
@@ -1492,7 +1492,7 @@ c     mpole           : coeffs of the h-expansion
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
       integer nterms,ns,i,l,m, ier, lused
-      real *8 center(1),sources(3,ns)
+      real *8 center(3),sources(3,ns)
       real *8 dipvec(3,ns)
       real *8 scale
       complex *16 mpole(0:nterms,-nterms:nterms)
@@ -2937,7 +2937,7 @@ c     mpole           : coeffs of the h-expansion
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
       integer nterms,ns,i,l,m, ier, ier1, lused
-      real *8 center(1),sources(3,ns)
+      real *8 center(3),sources(3,ns)
       real *8 scale
       complex *16 mpole(0:nterms,-nterms:nterms)
       complex *16 eye,zk,charge(1)
@@ -3006,7 +3006,7 @@ c     mpole           : coeffs of the h-expansion
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
       integer nterms,ns,i,l,m, ier, ier1, lused
-      real *8 center(1),sources(3,ns)
+      real *8 center(3),sources(3,ns)
       real *8 scale
       complex *16 mpole(0:nterms,-nterms:nterms)
       complex *16 eye,zk,charge(1)
@@ -3547,7 +3547,7 @@ c     mpole           : coeffs of the h-expansion
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
       integer nterms,ns,i,l,m, ier, lused
-      real *8 center(1),sources(3,ns)
+      real *8 center(3),sources(3,ns)
       real *8 dipvec(3,ns)
       real *8 scale
       complex *16 mpole(0:nterms,-nterms:nterms)
@@ -3613,7 +3613,7 @@ c     mpole           : coeffs of the h-expansion
 c-----------------------------------------------------------------------
       implicit real *8 (a-h,o-z)
       integer nterms,ns,i,l,m, ier, lused
-      real *8 center(1),sources(3,ns)
+      real *8 center(3),sources(3,ns)
       real *8 dipvec(3,ns)
       real *8 scale
       complex *16 mpole(0:nterms,-nterms:nterms)

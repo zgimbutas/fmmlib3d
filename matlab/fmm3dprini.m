@@ -1,7 +1,8 @@
 function fmm3dprini(unit1,unit2)
 %FMM3DPRINI Initialize simple printing routines.
 %
-% Calling FMM3DPRINI(6,13) causes printing to screen and file fort.13.     
+% Calling FMM3DPRINI(6,13) causes printing to screen and file fort.13.
+% Calling FMM3DPRINI(0,0) stops printing.
 %
 
 if (nargin == 1 )

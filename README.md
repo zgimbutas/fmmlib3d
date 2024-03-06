@@ -1,8 +1,8 @@
 # Helmholtz and Laplace FMM library in R^3.
 
-Date: March 7, 2021
+Date: March 6, 2024
 
-Version 1.2.3
+Version 1.2.4
 
 The FMMLIB3D suite permits the evaluation of potential fields governed
 by the Laplace, Helmholtz equations in free space.
@@ -54,7 +54,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 src/ - Fortran source code
 examples/ - Fortran testing drivers and makefiles
 matlab/ - matlab scripts and mex files 
-contrib/mwrap-0.33.3/ - mwrap source code
+contrib/mwrap-1.1.1/ - mwrap source code
 ```
 
 To test the library, please type `make test`. 

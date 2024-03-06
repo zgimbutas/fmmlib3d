@@ -1,0 +1,5 @@
+Example of bindings using the mxArray wrapper.  In this case, we wrap
+an STL priority queue of (mxArray, time) pairs.  This is a variant of the
+event queue example in the example/eventq subdirectory, except in this
+version we can store arbitrary MATLAB data objects in the queue,
+rather than just integers.

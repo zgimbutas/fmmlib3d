@@ -1,0 +1,2 @@
+$int add2(int i) { return i+2; }
+# int j = add2(int 2);

@@ -1,0 +1,2 @@
+Parse error (test_syntax.mw:4): syntax error, unexpected NON_C_LINE, expecting ';'
+Parse error (test_syntax.mw:8): syntax error, unexpected $end, expecting ';'

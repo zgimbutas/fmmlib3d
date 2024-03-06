@@ -1,0 +1,9 @@
+function test_include()
+
+@include test_include2.mw
+tassert(j == 4, 'Include test');
+
+% ================================================================
+function tassert(pred, msg)
+
+if ~pred, fprintf('Failure: %s\n', msg); end

@@ -1,0 +1,40 @@
+% elements.mw
+%   MWrap bindings for element types.
+%
+% Copyright (c) 2007  David Bindel
+% See the file COPYING for copying permissions
+
+$[
+#include "mesh.h"
+#include "scalar1d.h"
+#include "scalar2d.h"
+#include "elastic2d.h"
+$]
+
+# class Scalar1D : EType;
+# class Scalar2D : EType;
+# class Elastic2D : EType;
+
+
+@function etype = Mesh_add_scalar1d(mobj, k)
+% material = Mesh_add_scalar1d(mobj, k)
+%
+% Add a simple scalar element type to the mesh object.
+# Scalar1D* etype = new Scalar1D(double k);
+# mobj->Mesh.add_material(EType* etype);
+
+
+@function etype = Mesh_add_scalar2d(mobj, k)
+% material = Mesh_add_scalar2d(mobj, k)
+%
+% Add a simple scalar element type to the mesh object.
+# Scalar2D* etype = new Scalar2D(double k);
+# mobj->Mesh.add_material(EType* etype);
+
+
+@function etype = Mesh_add_elastic2d(mobj, E, nu, which)
+% material = Mesh_add_elastic2d(mobj, E, nu, which)
+%
+% Add a plane strain elastic element type to the mesh.
+# Elastic2D* etype = new Elastic2D(double E, double nu, cstring which);
+# mobj->Mesh.add_material(EType* etype);

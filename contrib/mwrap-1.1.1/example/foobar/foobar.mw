@@ -1,0 +1,7 @@
+$ #include <string.h>
+function foobar;
+
+  s1 = 'foo';
+  s2 = 'bar';
+  # strncat(inout cstring[128] s1, cstring s2, int 127);
+  fprintf('Should be foobar: %s\n', s1);

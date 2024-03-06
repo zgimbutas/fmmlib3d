@@ -1,0 +1,12 @@
+Example of bindings to encapsulate a C++ class.  In this case, we bind
+the methods for an event queue of (id, time) pairs based on the STL
+priority queue class.
+
+This directory contains two different versions of the example.  The "plain"
+version uses the prefix "EventQ_" to disambiguate references to class methods.
+For example, "EventQ_empty" would refer to the "empty" method of the event
+queue class.  The "class" version uses the object-oriented features in MATLAB
+to wrap the C++ class in a MATLAB class, so that the "empty" method in C++ can
+be mapped to the "empty" method in MATLAB without fear of conflict with any
+other methods of the same name.  Because Octave does not support MATLAB-style
+OO, this latter version does not work with Octave.

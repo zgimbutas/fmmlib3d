@@ -1,0 +1,46 @@
+MWrap
+=====
+
+MWrap is an interface generation system in the spirit of SWIG or matwrap.
+From a set of augmented MATLAB script files, MWrap will generate a MEX gateway to desired C/C++/Fortran function calls and MATLAB function files to access that gateway.
+It makes wrapping C/C++/Fortran from MATLAB almost pleasant!
+The details of converting to and from MATLAB's data structures, and of
+allocating and freeing temporary storage, are hidden from the user. It is also compatible with modern Octave via `mkoctfile --mex`.
+
+To compile, edit `make.inc` and then run `make`.  The output will be a standalone executable (`mwrap`) in the main directory.
+
+It was created by David Bindel, who hosts his old version
+at https://www.cs.cornell.edu/~bindel/sw/mwrap
+
+
+Example usage
+-------------
+
+David Bindel's user's guide (`mwrap.pdf`) describes MWrap in detail; you can also look at the example subdirectories and the testing subdirectory to get some idea of how MWrap is used.
+
+Alex Barnett also maintains a set of minimally complete tutorial examples of calling C/Fortran libraries (including OpenMP) from MATLAB/Octave, using MWrap, at https://github.com/ahbarnett/mwrapdemo
+
+
+Contributors and version history
+--------------------------------
+
+MWrap was originally written by David Bindel, c. 2009.
+It was moved to github in c. 2015 in order to add new features, and is now maintained by Zydrunas Gimbutas, Alex Barnett, Libin Lu, Manas Rachh, and Rafael Laboissière.
+
+Version 0.33 (c. 2009)
+Author: David Bindel <bindel@cs.cornell.edu>
+    Initial revision, clone David's repository (c. 2015)
+
+Version 1.0 (c. 2020)
+Contributors: Zydrunas Gimbutas, Alex Barnett, Libin Lu.
+    Add support for 64-bit Matlab and gcc-4.6
+    Add support for gcc 7.3+
+    Add support for Matlab R2018a complex interleaved API
+    Add support for C99 int32_t, int64_t, uint32_t, uint64_t
+    Allow single precision Matlab inputs and outputs
+
+Version 1.1 (2022)
+Contributors: Manas Rachh, Zydrunas Gimbutas.
+    Add support for gfortran -fno-underscoring flag
+
+Also see https://github.com/zgimbutas/mwrap/tags

@@ -1,0 +1,63 @@
+% test double and single precision, scalars and arrays, in mwrap.
+% Barnett & Gimbutas 7/5/20-7/20/20.
+
+% make as in Makefile,
+% then pass-fail test in octave/matlab with:
+% test_single.m
+
+% the old non-pass-fail is here:
+% test_single_humanreadable.m
+
+
+% REAL======================================================
+
+% scalar real.........
+
+$ void add(double a, double b, double *c) { *c = a + b; }
+@function c=add(a,b)
+# add(double a, double b, output double[1]c);
+
+$ void addf(float a, float b, float *c) { *c = a + b; }
+@function c=addf(a,b)
+# addf(float a, float b, output float[1]c);
+
+% array real........
+
+$ void arradd(double *a, double *b, double *c, int n)
+$ { for (int i=0;i<n;++i) c[i] = a[i] + b[i]; }
+@function c=arradd(a,b)
+n = numel(a);
+# arradd(double[n] a, double[n] b, output double[n]c, int n);
+
+$ void arraddf(float *a, float *b, float *c, int n)
+$ { for (int i=0;i<n;++i) c[i] = a[i] + b[i]; }
+@function c=arraddf(a,b)
+n = numel(a);
+# arraddf(float[n] a, float[n] b, output float[n]c, int n);
+
+
+% COMPLEX=========================================================
+
+% scalar complex.........
+
+$ void addz(dcomplex a, dcomplex b, dcomplex *c) { *c = a + b; }
+@function c=addz(a,b)
+# addz(dcomplex a, dcomplex b, output dcomplex[1]c);
+
+$ void addc(fcomplex a, fcomplex b, fcomplex *c) { *c = a + b; }
+@function c=addc(a,b)
+# addc(fcomplex a, fcomplex b, output fcomplex[1]c);
+
+% array complex ........
+
+$ void arraddz(dcomplex *a, dcomplex *b, dcomplex *c, int n)
+$ { for (int i=0;i<n;++i) c[i] = a[i] + b[i]; }
+@function c=arraddz(a,b)
+n = numel(a);
+# arraddz(dcomplex[n] a, dcomplex[n] b, output dcomplex[n]c, int n);
+
+$ void arraddc(fcomplex *a, fcomplex *b, fcomplex *c, int n)
+$ { for (int i=0;i<n;++i) c[i] = a[i] + b[i]; }
+@function c=arraddc(a,b)
+n = numel(a);
+# arraddc(fcomplex[n] a, fcomplex[n] b, output fcomplex[n]c, int n);

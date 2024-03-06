@@ -18,7 +18,7 @@ SRC = ./src
 DOC = ./doc
 MATLAB = ./matlab
 EXAMPLES = ./examples
-MWRAP = ./contrib/mwrap-0.33.3
+MWRAP = ./contrib/mwrap-1.1.1
 
 test: 
 	cd $(EXAMPLES); $(MAKE) clean hfmm3dpart

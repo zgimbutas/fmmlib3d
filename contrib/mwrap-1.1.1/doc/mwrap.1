@@ -1,0 +1,82 @@
+.TH MWRAP 1 2012 "mwrap" "MWRAP manpage"
+.SH NAME
+mwrap - Octave/MATLAB mex generator
+.SH SYNOPSIS
+.SY mwrap
+.OP \-mex \fIoutputmex\fP
+.OP \-m \fIoutput.m\fP
+.OP \-c \fIoutputmex.c\fP
+.OP \-mb
+.OP \-list
+.OP \-catch
+.OP \-i8
+.OP \-c99complex
+.OP \-cppcomplex
+\fIinfile1\fP \fIinfile2\fP ...
+.br
+.SH DESCRIPTION
+.LP
+\fBmwrap\fP is an interface generation system in the spirit of SWIG or
+matwrap.  From a set of augmented Octave/MATLAB script files, \fBmwrap\fP
+will generate a MEX gateway to desired C/C++ function calls and \.m function
+files to access that gateway.  The details of converting to and from
+Octave's or MATLAB's data structures, and of allocating and freeing
+temporary storage, are hidden from the user.
+.SH OPTIONS
+.TP
+.B \-mex
+specifies the name of the MEX function that the generated functions will
+call.  This name will generally be the same as the prefix for the C/C++
+output file name.
+.
+.TP
+.B \-m
+specifies the name of the Octave/MATLAB script to be generated.
+.
+.TP
+.B \-c
+specifies the name of the C MEX file to be generated.  The MEX file may
+contain stubs corresponding to several different generated files.
+.
+.TP
+.B \-mb
+redirect Octave/MATLAB function output to files named in the input.  In this
+mode, the processor will change Octave/MATLAB function output files whenever
+it encounters a line beginning with @.  If @ occurs alone on a line, the
+output will be turned off; if the line begins with @function, the line will
+be treated as the first line of a function, and the m-file name will be
+deduced from the function name; and otherwise, the characters after @ (up to
+the next set of white space) will be treated as a filename, and \fBmwrap\fP
+will try to write to that file.
+.
+.TP
+.B \-list
+print to the standard output the names of all files that would be generated
+from redirect output by the \-mb flag.
+.
+.TP
+.B \-catch
+surround library calls in try/catch blocks in order to intercept C++
+exceptions.
+.
+.TP
+.B \-i8
+convert \fBint\fP, \fBlong\fP, \fBuint\fP, \fBulong\fP types to
+\fBint64_t\fP, \fBuint64_t\fP. This provides
+a convenient way to interface with \fB-fdefault-integer-8\fP and 
+\fB-i8\fP flags used by Fortran compilers.
+.
+.TP
+.B \-c99complex
+use the C99 complex floating point types as the default \fBdcomplex\fP and
+\fBfcomplex\fP types.
+.
+.TP
+.B \-cppcomplex
+use the C++ complex floating point types as the default \fBdcomplex\fP and
+\fBfcomplex\fP types.
+
+.SH AUTHORS
+.LP
+\fBmwrap\fP is written by David Bindel and Zydrunas Gimbutas. This
+manual page was written by Nicolas Bourdaud.

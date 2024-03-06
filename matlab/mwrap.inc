@@ -41,7 +41,7 @@
 
 ifeq ($(TARGET), octave-linux)
 
-FFLAGS=-g -O2 -fPIC
+FFLAGS=-g -O2 -fPIC -std=legacy
 
 # Use the following for GNU Octave + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -54,7 +54,8 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 ###MEX_LIBS=-lm
-MEX_LIBS=-Wl,--no-undefined -lm -ldl -lgfortran
+###MEX_LIBS=-Wl,--no-undefined -lm -ldl -lgfortran
+MEX_LIBS=-lm -ldl -lgfortran
 MEX_LINK=
 
 MEX_FLAGS=
@@ -66,7 +67,7 @@ endif
 
 ifeq ($(TARGET), octave-linux-openmp)
 
-FFLAGS=-g -O3 --openmp -fPIC
+FFLAGS=-g -O3 --openmp -fPIC -std=legacy
 
 # Use the following for GNU Octave + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -79,7 +80,8 @@ MEX_CC=   $(CXX)
 MW=mwrap
 MWFLAGS=-c99complex -mex	
 ###MEX_LIBS=-lgomp -lm
-MEX_LIBS=-Wl,--no-undefined -lgomp -lm -ldl -lgfortran
+###MEX_LIBS=-Wl,--no-undefined -lgomp -lm -ldl -lgfortran
+MEX_LIBS=-lgomp -lm -ldl -lgfortran
 MEX_LINK=
 
 MEX_FLAGS=
@@ -98,7 +100,7 @@ endif
 
 ifeq ($(TARGET), octave-macosx)
 
-FFLAGS=-g -O2 -fPIC
+FFLAGS=-g -O2 -fPIC -std=legacy
 
 # Use the following for GNU Octave + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -123,7 +125,7 @@ endif
 
 ifeq ($(TARGET), octave-macosx-openmp)
 
-FFLAGS=-g -O3 --openmp -fPIC
+FFLAGS=-g -O3 --openmp -fPIC -std=legacy
 
 # Use the following for GNU Octave + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -155,7 +157,7 @@ endif
 
 ifeq ($(TARGET), matlab-maci)
 
-FFLAGS=-g -O2 -fPIC
+FFLAGS=-g -O2 -fPIC -std=legacy
 
 # Use the following for Matlab + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -183,7 +185,7 @@ endif
 
 ifeq ($(TARGET), matlab-maci-openmp)
 
-FFLAGS=-g -O2 -fPIC --openmp
+FFLAGS=-g -O2 -fPIC --openmp -std=legacy
 
 # Use the following for Matlab + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -218,7 +220,7 @@ endif
 
 ifeq ($(TARGET), matlab-maci64)
 
-FFLAGS=-g -O2 -fPIC
+FFLAGS=-g -O2 -fPIC -std=legacy
 
 # Use the following for Matlab + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -246,7 +248,7 @@ endif
 
 ifeq ($(TARGET), matlab-maci64-openmp)
 
-FFLAGS=-g -O2 -fPIC --openmp
+FFLAGS=-g -O2 -fPIC --openmp -std=legacy
 
 # Use the following for Matlab + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -281,7 +283,7 @@ endif
 
 ifeq ($(TARGET), matlab-linux-a64)
 
-FFLAGS=-g -O2 -fPIC
+FFLAGS=-g -O2 -fPIC -std=legacy
 
 # Use the following for Matlab + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -310,7 +312,7 @@ endif
 
 ifeq ($(TARGET), matlab-linux-a64-openmp)
 
-FFLAGS=-g -O3 --openmp -fPIC
+FFLAGS=-g -O3 --openmp -fPIC -std=legacy
 
 # Use the following for Matlab + gfortran
 TESTC99COMPLEX=test_c99_complex
@@ -468,7 +470,7 @@ endif
 
 ifeq ($(TARGET), octave-linux-intel)
 
-FFLAGS=-g -xT -O3 -ip -fPIC
+FFLAGS=-g -xT -O3 -ip -fPIC -std=legacy
 intel_prefix="/opt/intel/fce/10.1.008/lib"
 
 # Use the following for GNU Octave + gfortran
@@ -494,7 +496,7 @@ endif
 
 ifeq ($(TARGET), octave-linux-intel-openmp)
 
-FFLAGS=-g -xT -O3 -ip -openmp -fPIC
+FFLAGS=-g -xT -O3 -ip -openmp -fPIC -std=legacy
 intel_prefix="/opt/intel/fce/10.1.008/lib"
 
 # Use the following for GNU Octave + gfortran
@@ -527,7 +529,7 @@ endif
 
 ifeq ($(TARGET), matlab-linux-a64-intel)
 
-FFLAGS=-g -xT -O3 -ip -fPIC
+FFLAGS=-g -xT -O3 -ip -fPIC -std=legacy
 intel_prefix="/opt/intel/fce/10.1.008/lib"
 
 # Use the following for Matlab + gfortran
@@ -557,7 +559,7 @@ endif
 
 ifeq ($(TARGET), matlab-linux-a64-intel-openmp)
 
-FFLAGS=-g -xT -O3 -ip --openmp -fPIC
+FFLAGS=-g -xT -O3 -ip --openmp -fPIC -std=legacy
 intel_prefix="/opt/intel/fce/10.1.008/lib"
 
 # Use the following for Matlab + gfortran
